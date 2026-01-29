@@ -1,0 +1,176 @@
+Build a FUTURISTIC, MODERN, SEO-OPTIMIZED full-stack MERN web application called “PaidPortfolio”.
+
+This is a premium platform where users can:
+1) Buy pre-made portfolio website templates
+2) Request fully custom portfolio websites
+
+The design must feel like a next-generation tech startup product with a BLACK & WHITE FUTURISTIC THEME.
+
+========================
+TECH STACK
+========================
+MongoDB, Express.js, React.js, Node.js
+Use MVC architecture in backend and scalable component structure in frontend.
+
+========================
+GLOBAL DESIGN STYLE
+========================
+Theme: Futuristic Black & White
+
+Colors:
+- Primary background: Deep black (#000000)
+- Secondary surfaces: Dark gray (#0f0f0f / #141414)
+- Text primary: Pure white (#ffffff)
+- Text secondary: Soft gray (#bfbfbf)
+
+Visual Style:
+- Glassmorphism panels (blurred glass effect on dark background)
+- Subtle glowing borders (white glow, very soft)
+- Thin futuristic lines/dividers
+- Grid or dot background pattern in hero section
+- Soft gradient light flares in black/white tones
+- Rounded corners with smooth shadows
+- Smooth micro-interactions
+
+Typography:
+- Use modern futuristic Google Fonts (like Space Grotesk, Inter, or Sora)
+- Big bold headings
+- Wide letter spacing for section titles
+
+Use Tailwind CSS for styling.
+
+========================
+ANIMATIONS & EFFECTS
+========================
+- Smooth fade + slide-in animations on scroll
+- Floating/parallax background elements in hero section
+- Hover glow effects on buttons and cards
+- Smooth scaling on hover
+- Animated gradient lines or moving light streaks in some sections
+- Cursor hover effects for interactive feel
+
+All animations must be smooth and premium, not flashy or distracting.
+
+========================
+SEO REQUIREMENTS (IMPORTANT)
+========================
+- Use React Helmet for meta titles and descriptions
+- Proper heading hierarchy (1 H1 per page)
+- Alt text for all images
+- Semantic HTML5 tags
+- SEO-friendly URLs
+- Optimized images and lazy loading
+
+Target keywords:
+portfolio website for students
+developer portfolio website
+buy portfolio website
+custom portfolio website service
+personal portfolio for job
+
+========================
+HOMEPAGE STRUCTURE
+========================
+
+1️⃣ HERO SECTION (FUTURISTIC IMPACT)
+
+Headline:
+“Your Skills Deserve More Than a Resume.”
+
+Subtext:
+We craft job-winning portfolio websites for students, developers, and creators.
+
+Design:
+- Dark futuristic background with subtle grid or glowing particles
+- Glass-style content box
+- Two glowing CTA buttons:
+  [ View Portfolio Designs ]
+  [ Get Custom Portfolio ]
+
+2️⃣ 3D PORTFOLIO SHOWCASE (MAIN VISUAL HIGHLIGHT)
+
+Create a futuristic 3D carousel slider.
+
+Requirements:
+- React + Tailwind
+- CSS 3D transforms or Framer Motion
+- Center card large with glow
+- Side cards rotated with perspective depth
+- Soft shadow/glow under active card
+- Auto-slide every 5 seconds
+- Pause on hover
+- Navigation arrows
+- Swipe on mobile
+
+Cards must look like floating futuristic panels.
+
+Section heading:
+“Explore Our Portfolio Designs in Action”
+
+3️⃣ WHY YOU NEED A PORTFOLIO
+Futuristic icon cards explaining benefits.
+
+4️⃣ PRE-MADE PORTFOLIO STORE PREVIEW
+Grid with glowing hover effects.
+
+5️⃣ CUSTOM PORTFOLIO SERVICE
+Timeline-style process section with animated steps.
+
+6️⃣ FEATURES SECTION
+Use glowing line icons:
+✔ Mobile Optimized
+✔ Fast Performance
+✔ Recruiter-Focused Layouts
+✔ Modern Visual Design
+
+7️⃣ TESTIMONIALS
+Cards with soft glassmorphism style.
+
+8️⃣ PRICING PREVIEW
+
+9️⃣ FINAL CTA FOOTER
+Dark futuristic footer with glowing divider lines.
+
+========================
+PAGES TO BUILD
+========================
+Home  
+Templates Store  
+Template Details  
+Custom Portfolio Service  
+User Dashboard  
+Admin Dashboard  
+Login / Register  
+Contact  
+Privacy Policy / Terms  
+
+========================
+BACKEND
+========================
+MongoDB models:
+User, PortfolioTemplate, Order, CustomRequest
+
+JWT authentication
+Role-based admin access
+REST APIs for templates, orders, custom requests
+
+========================
+EXTRA PREMIUM TOUCHES
+========================
+- Smooth page transitions
+- Loading skeletons
+- Toast notifications
+- 404 futuristic error page
+- Sticky glassmorphism navbar
+- Subtle animated background elements
+
+========================
+GOAL
+========================
+The final website must look like a futuristic tech startup product, not a basic template site.
+
+The black & white theme should feel high-tech, premium, and modern.
+The 3D portfolio slider must be the visual centerpiece.
+The UI should feel interactive, smooth, and next-gen.
+SEO and performance must be fully optimized.
+Generate full working code with clear folder structure and run instructions.
