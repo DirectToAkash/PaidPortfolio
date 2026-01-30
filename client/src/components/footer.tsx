@@ -17,7 +17,7 @@ const footerLinks = {
   legal: [
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms of Service", href: "/terms" },
-    { label: "Refund Policy", href: "/refunds" },
+    { label: "Refund Policy", href: "/refund-policy" },
   ],
 };
 
@@ -61,15 +61,15 @@ export function Footer() {
                   data-testid="link-email"
                 >
                   <Mail className="w-4 h-4" />
-                  hello@paidportfolio.com
+                  directtoakash@gmail.com
                 </a>
                 <div className="flex items-center gap-3 text-white/60">
                   <MapPin className="w-4 h-4" />
-                  San Francisco, CA
+                  Noida , India
                 </div>
                 <div className="flex items-center gap-3 text-white/60">
                   <Phone className="w-4 h-4" />
-                  +1 (555) 123-4567
+                  +91 9984709265
                 </div>
               </div>
             </div>

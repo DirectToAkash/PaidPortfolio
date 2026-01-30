@@ -35,20 +35,20 @@ const contactInfo = [
   {
     icon: Mail,
     title: "Email Us",
-    value: "hello@paidportfolio.com",
+    value: "directtoakash@gmail.com",
     description: "We'll respond within 24 hours",
   },
   {
     icon: MapPin,
     title: "Location",
-    value: "San Francisco, CA",
+    value: "Noida, INDIA",
     description: "Remote-friendly team",
   },
   {
     icon: Phone,
     title: "Phone",
-    value: "+1 (555) 123-4567",
-    description: "Mon-Fri, 9AM-6PM PST",
+    value: "+91 9984709265",
+    description: "Mon-Fri, 9AM-6PM IST",
   },
   {
     icon: Clock,

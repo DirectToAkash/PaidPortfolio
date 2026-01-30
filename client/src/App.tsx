@@ -7,6 +7,7 @@ import Home from "@/pages/home";
 import Templates from "@/pages/templates";
 import Custom from "@/pages/custom";
 import Contact from "@/pages/contact";
+import RefundPolicy from "@/pages/refund-policy";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -16,6 +17,7 @@ function Router() {
       <Route path="/templates" component={Templates} />
       <Route path="/custom" component={Custom} />
       <Route path="/contact" component={Contact} />
+      <Route path="/refund-policy" component={RefundPolicy} />
       <Route component={NotFound} />
     </Switch>
   );
