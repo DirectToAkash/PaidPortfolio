@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/navbar";
@@ -60,6 +61,10 @@ const contactInfo = [
 
 export default function Contact() {
   const { toast } = useToast();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),

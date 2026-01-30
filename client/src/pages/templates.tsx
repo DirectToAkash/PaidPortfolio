@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/navbar";
@@ -15,6 +15,10 @@ const categories = ["All", "Developer", "Designer", "Minimal", "Creative", "Mode
 export default function Templates() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const { data: templates, isLoading } = useQuery<PortfolioTemplate[]>({
     queryKey: ["/api/templates"],

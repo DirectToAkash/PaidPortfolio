@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -12,6 +13,10 @@ import { PricingSection } from "@/components/pricing-section";
 import { CTASection } from "@/components/cta-section";
 
 export default function Home() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <>
       <Helmet>

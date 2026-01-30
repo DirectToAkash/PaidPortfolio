@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/navbar";
@@ -85,6 +86,10 @@ const features = [
 
 export default function Custom() {
   const { toast } = useToast();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const form = useForm<CustomRequestFormData>({
     resolver: zodResolver(customRequestFormSchema),

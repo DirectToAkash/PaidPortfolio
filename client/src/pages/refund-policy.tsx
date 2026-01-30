@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { 
@@ -29,6 +30,10 @@ const staggerContainer = {
 };
 
 export default function RefundPolicy() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <>
       <Helmet>
