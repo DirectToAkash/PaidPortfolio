@@ -2,6 +2,8 @@ import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import { WhatsAppButton } from "@/components/whatsapp-button";
+import { CustomCursor } from "@/components/custom-cursor";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import Templates from "@/pages/templates";
@@ -33,6 +35,8 @@ function App() {
       <TooltipProvider>
         <div className="min-h-screen bg-black text-white">
           <Toaster />
+          <CustomCursor />
+          <WhatsAppButton />
           <Router />
         </div>
       </TooltipProvider>

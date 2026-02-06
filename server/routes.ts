@@ -3,12 +3,42 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertCustomRequestSchema, insertContactSchema, insertOrderSchema } from "@shared/schema";
 import { z } from "zod";
+import nodemailer from "nodemailer";
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+async function sendEmailNotification(to: string, subject: string, html: string) {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn("Email credentials not found. Skipping email notification.");
+    return false;
+  }
+
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to,
+      subject,
+      html,
+    });
+    console.log("Email sent successfully");
+    return true;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return false;
+  }
+}
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  
+
   // Templates API
   app.get("/api/templates", async (req, res) => {
     try {
@@ -76,7 +106,25 @@ export async function registerRoutes(
     try {
       const validatedData = insertCustomRequestSchema.parse(req.body);
       const request = await storage.createCustomRequest(validatedData);
-      res.status(201).json(request);
+
+      // Send notification email
+      const success = await sendEmailNotification(
+        "directtoakash@gmail.com",
+        "New Custom Portfolio Request",
+        `
+        <h2>New Custom Portfolio Request</h2>
+        <p><strong>Name:</strong> ${request.name}</p>
+        <p><strong>Email:</strong> ${request.email}</p>
+        <p><strong>Phone:</strong> ${request.phone || "N/A"}</p>
+        <p><strong>Budget:</strong> ${request.budget}</p>
+        <p><strong>Timeline:</strong> ${request.timeline}</p>
+        <p><strong>Profession:</strong> ${request.profession || "N/A"}</p>
+        <h3>Description:</h3>
+        <p>${request.description}</p>
+        `
+      );
+
+      res.status(201).json({ ...request, emailSent: success });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Invalid request data", details: error.errors });
@@ -101,7 +149,22 @@ export async function registerRoutes(
     try {
       const validatedData = insertContactSchema.parse(req.body);
       const message = await storage.createContactMessage(validatedData);
-      res.status(201).json(message);
+
+      // Send notification email
+      const success = await sendEmailNotification(
+        "directtoakash@gmail.com",
+        "New Contact Form Submission",
+        `
+        <h2>New Contact Message</h2>
+        <p><strong>Name:</strong> ${message.name}</p>
+        <p><strong>Email:</strong> ${message.email}</p>
+        <p><strong>Subject:</strong> ${message.subject}</p>
+        <h3>Message:</h3>
+        <p>${message.message}</p>
+        `
+      );
+
+      res.status(201).json({ ...message, emailSent: success });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Invalid contact data", details: error.errors });

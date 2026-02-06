@@ -67,8 +67,8 @@ export function PortfolioCarousel() {
   const getCardStyle = (index: number) => {
     const diff = index - currentIndex;
     const normalizedDiff = ((diff + portfolioItems.length) % portfolioItems.length);
-    const adjustedDiff = normalizedDiff > portfolioItems.length / 2 
-      ? normalizedDiff - portfolioItems.length 
+    const adjustedDiff = normalizedDiff > portfolioItems.length / 2
+      ? normalizedDiff - portfolioItems.length
       : normalizedDiff;
 
     if (adjustedDiff === 0) {
@@ -124,7 +124,7 @@ export function PortfolioCarousel() {
   return (
     <section className="relative py-24 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-black via-[#0a0a0a] to-black" />
-      
+
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -168,9 +168,8 @@ export function PortfolioCarousel() {
                   data-testid={`card-portfolio-${item.id}`}
                 >
                   <div
-                    className={`glass rounded-xl overflow-hidden ${
-                      index === currentIndex ? "glow-white animate-pulse-glow" : ""
-                    }`}
+                    className={`glass rounded-xl overflow-hidden ${index === currentIndex ? "glow-white animate-pulse-glow" : ""
+                      }`}
                   >
                     <div className="relative h-56 overflow-hidden">
                       <img
@@ -215,17 +214,17 @@ export function PortfolioCarousel() {
 
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 rounded-full glass flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-50 w-14 h-14 rounded-full bg-black/90 border border-white/30 flex items-center justify-center text-white transition-all hover:bg-white hover:text-black hover:scale-110 shadow-lg hover:shadow-white/25 backdrop-blur-sm"
             data-testid="button-carousel-prev"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-8 h-8" />
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 rounded-full glass flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-50 w-14 h-14 rounded-full bg-black/90 border border-white/30 flex items-center justify-center text-white transition-all hover:bg-white hover:text-black hover:scale-110 shadow-lg hover:shadow-white/25 backdrop-blur-sm"
             data-testid="button-carousel-next"
           >
-            <ChevronRight className="w-6 h-6" />
+            <ChevronRight className="w-8 h-8" />
           </button>
         </div>
 
@@ -234,11 +233,10 @@ export function PortfolioCarousel() {
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all ${
-                index === currentIndex
+              className={`w-2 h-2 rounded-full transition-all ${index === currentIndex
                   ? "w-8 bg-white"
                   : "bg-white/30 hover:bg-white/50"
-              }`}
+                }`}
               data-testid={`button-dot-${index}`}
             />
           ))}

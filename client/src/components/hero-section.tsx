@@ -8,10 +8,10 @@ export function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 bg-black" />
       <div className="absolute inset-0 grid-pattern opacity-50" />
-      
+
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-white/3 rounded-full blur-3xl" />
-      
+
       <motion.div
         className="absolute top-20 right-20 w-2 h-2 bg-white rounded-full"
         animate={{
@@ -111,6 +111,21 @@ export function HeroSection() {
                 Get Custom Portfolio
               </Button>
             </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="mt-8 flex items-center justify-center"
+          >
+            <div className="glass px-6 py-3 rounded-full flex items-center gap-3 border border-white/10 hover:border-white/30 transition-colors">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+              <div className="text-sm text-white/80">
+                <span className="font-semibold text-white">Trust Guarantee:</span> Pay after work completion available.
+                <Link href="/contact" className="ml-1 underline decoration-white/30 underline-offset-4 hover:text-white transition-colors"> Connect on call to apply.</Link>
+              </div>
+            </div>
           </motion.div>
 
           <motion.div
