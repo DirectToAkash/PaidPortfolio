@@ -123,7 +123,7 @@ export function HeroSection() {
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
               <div className="text-sm text-white/80">
                 <span className="font-semibold text-white">Trust Guarantee:</span> Pay after work completion available.
-                <Link href="/contact" className="ml-1 underline decoration-white/30 underline-offset-4 hover:text-white transition-colors"> Connect on call to apply.</Link>
+                <Link href="/book" className="ml-1 underline decoration-white/30 underline-offset-4 hover:text-white transition-colors"> Connect on call to apply.</Link>
               </div>
             </div>
           </motion.div>

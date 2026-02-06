@@ -13,6 +13,7 @@ import RefundPolicy from "@/pages/refund-policy";
 import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
 import NotFound from "@/pages/not-found";
+import Book from "@/pages/book";
 
 function Router() {
   return (
@@ -24,6 +25,7 @@ function Router() {
       <Route path="/refund-policy" component={RefundPolicy} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
+      <Route path="/book" component={Book} />
       <Route component={NotFound} />
     </Switch>
   );

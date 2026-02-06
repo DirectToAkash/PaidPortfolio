@@ -29,9 +29,8 @@ export function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "glass-strong" : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "glass-strong" : "bg-transparent"
+        }`}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
@@ -54,11 +53,10 @@ export function Navbar() {
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>
                 <motion.span
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
-                    location === link.href
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${location === link.href
                       ? "text-white bg-white/10"
                       : "text-white/70 hover:text-white hover:bg-white/5"
-                  }`}
+                    }`}
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.2 }}
                   data-testid={`link-nav-${link.label.toLowerCase().replace(' ', '-')}`}
@@ -83,6 +81,14 @@ export function Navbar() {
             >
               Get Started
             </Button>
+            <Link href="/book">
+              <Button
+                variant="outline"
+                className="border-white/20 text-white hover:bg-white/10"
+              >
+                Book Call
+              </Button>
+            </Link>
           </div>
 
           <button
@@ -108,11 +114,10 @@ export function Navbar() {
               {navLinks.map((link) => (
                 <Link key={link.href} href={link.href}>
                   <div
-                    className={`block px-4 py-3 rounded-md text-sm font-medium ${
-                      location === link.href
+                    className={`block px-4 py-3 rounded-md text-sm font-medium ${location === link.href
                         ? "text-white bg-white/10"
                         : "text-white/70 hover:text-white hover:bg-white/5"
-                    }`}
+                      }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                     data-testid={`link-mobile-${link.label.toLowerCase().replace(' ', '-')}`}
                   >
@@ -127,6 +132,11 @@ export function Navbar() {
                 <Button className="w-full bg-white text-black">
                   Get Started
                 </Button>
+                <Link href="/book">
+                  <Button variant="outline" className="w-full border-white/20 text-white mt-2">
+                    Book Call
+                  </Button>
+                </Link>
               </div>
             </div>
           </motion.div>
