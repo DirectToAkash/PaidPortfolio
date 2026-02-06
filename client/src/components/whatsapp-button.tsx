@@ -29,7 +29,7 @@ export function WhatsAppButton() {
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
           className="relative z-10"
         >
-          <FaWhatsapp className="w-6 h-6" />
+          <FaWhatsapp className="w-6 h-6 text-[#25D366]" />
         </motion.div>
       </div>
       <span className="font-medium tracking-wide text-sm hidden sm:inline-block">

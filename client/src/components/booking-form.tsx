@@ -54,19 +54,29 @@ export function BookingForm() {
         Notes: ${data.notes || "None"}
       `; // Formatting for the email content
 
-            return apiRequest("POST", "/api/contact", {
+            const res = await apiRequest("POST", "/api/contact", {
                 name: data.name,
                 email: data.email,
                 subject: `📅 New Booking Request: ${date ? format(date, "MMM dd") : ""} @ ${timeSlot}`,
                 message: messageBody,
             });
+            return await res.json();
         },
-        onSuccess: () => {
+        onSuccess: (data: any) => {
             setIsSuccess(true);
-            toast({
-                title: "Booking Request Sent!",
-                description: "We'll confirm your appointment via email shortly.",
-            });
+
+            if (data.emailSent) {
+                toast({
+                    title: "Booking Request Sent!",
+                    description: "We'll confirm your appointment via email shortly.",
+                });
+            } else {
+                toast({
+                    title: "Booking Saved (Email Failed)",
+                    description: "Your request was saved, but we couldn't send the confirmation email. We will contact you soon.",
+                    variant: "destructive",
+                });
+            }
         },
         onError: () => {
             toast({

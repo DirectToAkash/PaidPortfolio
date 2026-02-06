@@ -5,19 +5,28 @@ import { insertCustomRequestSchema, insertContactSchema, insertOrderSchema } fro
 import { z } from "zod";
 import nodemailer from "nodemailer";
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// Transporter will be created on demand to ensure env vars are loaded
+
 
 async function sendEmailNotification(to: string, subject: string, html: string) {
+  // Log configuration status (masked for security)
+  const user = process.env.EMAIL_USER;
+  const hasPass = !!process.env.EMAIL_PASS;
+  console.log(`[Email Debug] Attempting to send email to ${to}`);
+  console.log(`[Email Debug] Config - User: ${user ? user.substring(0, 3) + "***" : "MISSING"}, Pass: ${hasPass ? "PRESENT" : "MISSING"}`);
+
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     console.warn("Email credentials not found. Skipping email notification.");
     return false;
   }
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
 
   try {
     await transporter.sendMail({
@@ -150,17 +159,33 @@ export async function registerRoutes(
       const validatedData = insertContactSchema.parse(req.body);
       const message = await storage.createContactMessage(validatedData);
 
-      // Send notification email
-      const success = await sendEmailNotification(
+      // Send notification email to Admin
+      await sendEmailNotification(
         "directtoakash@gmail.com",
-        "New Contact Form Submission",
+        `New Contact/Booking: ${message.subject}`,
         `
-        <h2>New Contact Message</h2>
+        <h2>New Message Received</h2>
         <p><strong>Name:</strong> ${message.name}</p>
         <p><strong>Email:</strong> ${message.email}</p>
         <p><strong>Subject:</strong> ${message.subject}</p>
         <h3>Message:</h3>
         <p>${message.message}</p>
+        `
+      );
+
+      // Send confirmation email to User
+      const success = await sendEmailNotification(
+        message.email,
+        "Booking Confirmation - PaidPortfolio",
+        `
+        <h2>We received your request!</h2>
+        <p>Hi ${message.name},</p>
+        <p>Thanks for getting in touch. We have received your message regarding:</p>
+        <blockquote>${message.subject}</blockquote>
+        <p>We will get back to you shortly.</p>
+        <br>
+        <p>Best regards,</p>
+        <p>The Team</p>
         `
       );
 

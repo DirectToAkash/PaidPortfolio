@@ -78,13 +78,22 @@ export default function Contact() {
 
   const mutation = useMutation({
     mutationFn: async (data: ContactFormData) => {
-      return apiRequest("POST", "/api/contact", data);
+      const res = await apiRequest("POST", "/api/contact", data);
+      return await res.json();
     },
-    onSuccess: () => {
-      toast({
-        title: "Message Sent!",
-        description: "We'll get back to you as soon as possible.",
-      });
+    onSuccess: (data: any) => {
+      if (data.emailSent) {
+        toast({
+          title: "Message Sent!",
+          description: "We'll get back to you as soon as possible.",
+        });
+      } else {
+        toast({
+          title: "Message Saved (Email Failed)",
+          description: "We received your message, but couldn't send the confirmation email. We'll be in touch.",
+          variant: "destructive",
+        });
+      }
       form.reset();
     },
     onError: () => {
@@ -127,7 +136,7 @@ export default function Contact() {
               Get in<span className="text-glow"> Touch</span>
             </h1>
             <p className="text-white/60 max-w-2xl mx-auto">
-              Have questions? We&apos;d love to hear from you. Send us a message and 
+              Have questions? We&apos;d love to hear from you. Send us a message and
               we&apos;ll respond as soon as possible.
             </p>
           </motion.div>
@@ -172,7 +181,7 @@ export default function Contact() {
                   <MessageSquare className="w-6 h-6 text-white" />
                   <h2 className="text-2xl font-bold text-white">Send us a Message</h2>
                 </div>
-                
+
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
