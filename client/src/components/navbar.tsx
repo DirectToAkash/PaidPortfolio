@@ -40,8 +40,8 @@ export function Navbar() {
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="w-8 h-8 rounded-md bg-white flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-black" />
+              <div className="w-8 h-8 flex items-center justify-center overflow-hidden">
+                <img src="/logo-icon.png" alt="PaidPortfolio Logo" className="w-full h-full object-cover" />
               </div>
               <span className="text-xl font-bold tracking-tight text-white" data-testid="text-logo">
                 PaidPortfolio
@@ -54,8 +54,8 @@ export function Navbar() {
               <Link key={link.href} href={link.href}>
                 <motion.span
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${location === link.href
-                      ? "text-white bg-white/10"
-                      : "text-white/70 hover:text-white hover:bg-white/5"
+                    ? "text-white bg-white/10"
+                    : "text-white/70 hover:text-white hover:bg-white/5"
                     }`}
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.2 }}
@@ -115,8 +115,8 @@ export function Navbar() {
                 <Link key={link.href} href={link.href}>
                   <div
                     className={`block px-4 py-3 rounded-md text-sm font-medium ${location === link.href
-                        ? "text-white bg-white/10"
-                        : "text-white/70 hover:text-white hover:bg-white/5"
+                      ? "text-white bg-white/10"
+                      : "text-white/70 hover:text-white hover:bg-white/5"
                       }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                     data-testid={`link-mobile-${link.label.toLowerCase().replace(' ', '-')}`}
