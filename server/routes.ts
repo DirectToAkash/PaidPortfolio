@@ -41,24 +41,7 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
 
-  // Email Test API - Restore for debugging
-  app.get("/api/test-email", async (req, res) => {
-    try {
-      const result = await sendEmailNotification(
-        "directtoakash@gmail.com",
-        "Test Email from Production (Resend)",
-        "<h1>It Works!</h1><p>This email was sent via Resend API.</p>"
-      );
 
-      if (result) {
-        res.json({ success: true, message: "Email sent successfully via Resend" });
-      } else {
-        res.status(500).json({ success: false, message: "Failed to send email. Check server logs." });
-      }
-    } catch (error) {
-      res.status(500).json({ success: false, message: "Error triggering email", error: String(error) });
-    }
-  });
 
   // Templates API
   app.get("/api/templates", async (req, res) => {
