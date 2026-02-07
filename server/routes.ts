@@ -21,7 +21,9 @@ async function sendEmailNotification(to: string, subject: string, html: string) 
   }
 
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // true for 465, false for other ports
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
@@ -29,24 +31,48 @@ async function sendEmailNotification(to: string, subject: string, html: string) 
   });
 
   try {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to,
       subject,
       html,
     });
-    console.log("Email sent successfully");
+    console.log("Email sent successfully. MessageId:", info.messageId);
     return true;
   } catch (error) {
     console.error("Error sending email:", error);
+    // Log the full error object for debugging in production
+    if (error instanceof Error) {
+      console.error("Stack:", error.stack);
+    }
     return false;
   }
 }
+
+// ... existing code ...
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+
+  // Email Test API - Temporary for debugging
+  app.get("/api/test-email", async (req, res) => {
+    try {
+      const result = await sendEmailNotification(
+        "directtoakash@gmail.com",
+        "Test Email from Production",
+        "<h1>It Works!</h1><p>If you are seeing this, the email configuration is correct.</p>"
+      );
+      if (result) {
+        res.json({ success: true, message: "Email sent successfully" });
+      } else {
+        res.status(500).json({ success: false, message: "Failed to send email. Check server logs." });
+      }
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Error triggering email", error: String(error) });
+    }
+  });
 
   // Templates API
   app.get("/api/templates", async (req, res) => {
