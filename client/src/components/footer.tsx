@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Sparkles, Mail, MapPin, Phone, Twitter, Linkedin, Github, Instagram } from "lucide-react";
+import { Mail, MapPin, Phone, Twitter, Linkedin, Github, Instagram } from "lucide-react";
 
 const footerLinks = {
   product: [
@@ -32,17 +32,17 @@ export function Footer() {
   return (
     <footer className="relative bg-black border-t border-white/10">
       <div className="absolute inset-0 grid-pattern opacity-30" />
-      
+
       <div className="relative">
         <div className="h-px w-full gradient-line" />
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
             <div className="lg:col-span-2">
               <Link href="/">
                 <div className="flex items-center gap-2 cursor-pointer mb-4">
-                  <div className="w-8 h-8 rounded-md bg-white flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-black" />
+                  <div className="w-8 h-8 flex items-center justify-center overflow-hidden">
+                    <img src="/logo-icon.png" alt="PaidPortfolio Logo" className="w-full h-full object-cover" />
                   </div>
                   <span className="text-xl font-bold tracking-tight text-white">
                     PaidPortfolio
@@ -50,10 +50,10 @@ export function Footer() {
                 </div>
               </Link>
               <p className="text-white/60 max-w-sm mb-6">
-                We craft job-winning portfolio websites for students, developers, and creators. 
+                We craft job-winning portfolio websites for students, developers, and creators.
                 Your skills deserve to be showcased professionally.
               </p>
-              
+
               <div className="space-y-3">
                 <a
                   href="mailto:hello@paidportfolio.com"

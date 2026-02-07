@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { BookingForm } from "@/components/booking-form";
 
@@ -18,8 +17,6 @@ export default function Book() {
                     content="Schedule a call with our team to discuss your custom portfolio website needs."
                 />
             </Helmet>
-
-            <Navbar />
 
             <main className="min-h-screen pt-32 pb-20 relative">
                 <div className="absolute inset-0 bg-black grid-pattern opacity-30 pointer-events-none" />

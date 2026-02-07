@@ -1,13 +1,12 @@
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
-import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { 
-  CheckCircle2, 
-  XCircle, 
-  Mail, 
-  AlertTriangle, 
+import {
+  CheckCircle2,
+  XCircle,
+  Mail,
+  AlertTriangle,
   FileText,
   Shield,
   Clock,
@@ -45,8 +44,6 @@ export default function RefundPolicy() {
         <link rel="canonical" href="https://paidportfolio.com/refund-policy" />
       </Helmet>
 
-      <Navbar />
-
       <main className="min-h-screen bg-black text-white overflow-hidden">
         {/* Animated Background */}
         <div className="fixed inset-0 pointer-events-none">
@@ -54,16 +51,16 @@ export default function RefundPolicy() {
           <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-white/5 to-transparent rounded-full blur-3xl animate-pulse" />
           <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-gray-500/5 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-white/3 to-transparent rounded-full blur-3xl" />
-          
+
           {/* Grid pattern */}
-          <div 
+          <div
             className="absolute inset-0 opacity-[0.03]"
             style={{
               backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
               backgroundSize: '50px 50px'
             }}
           />
-          
+
           {/* Floating particles */}
           <div className="absolute top-20 left-10 w-2 h-2 bg-white/20 rounded-full animate-float" />
           <div className="absolute top-40 right-20 w-1 h-1 bg-white/30 rounded-full animate-float" style={{ animationDelay: "0.5s" }} />
@@ -128,13 +125,13 @@ export default function RefundPolicy() {
               className="space-y-12"
             >
               {/* Introduction */}
-              <motion.div 
+              <motion.div
                 variants={fadeInUp}
                 className="glass-strong rounded-2xl p-8 border border-white/10"
               >
                 <p className="text-gray-300 leading-relaxed">
-                  Thank you for purchasing from PaidPortfolio. We sell digital portfolio products and related services. 
-                  Because our products are digital and often delivered instantly or custom-prepared, our refund policy 
+                  Thank you for purchasing from PaidPortfolio. We sell digital portfolio products and related services.
+                  Because our products are digital and often delivered instantly or custom-prepared, our refund policy
                   is limited and applies only under specific conditions described below.
                 </p>
               </motion.div>
@@ -151,8 +148,8 @@ export default function RefundPolicy() {
                 </div>
                 <div className="glass rounded-xl p-6 border border-white/5 ml-13">
                   <p className="text-gray-300 leading-relaxed">
-                    All purchases made on PaidPortfolio are considered <strong className="text-white">final and non-refundable</strong>, 
-                    except in situations where we are unable to fully deliver the purchased product or there is a verified issue 
+                    All purchases made on PaidPortfolio are considered <strong className="text-white">final and non-refundable</strong>,
+                    except in situations where we are unable to fully deliver the purchased product or there is a verified issue
                     with the final delivery.
                   </p>
                   <p className="text-gray-400 mt-4 text-sm">
@@ -173,14 +170,14 @@ export default function RefundPolicy() {
                 </div>
                 <div className="space-y-4 ml-13">
                   <p className="text-gray-400">A refund will only be considered in the following cases:</p>
-                  
+
                   <div className="glass rounded-xl p-6 border border-green-500/10 hover:border-green-500/20 transition-colors">
                     <div className="flex items-start gap-3">
                       <CheckCircle2 className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
                       <div>
                         <h3 className="font-semibold text-white mb-2">A. Non-Delivery of Product</h3>
                         <p className="text-gray-400 text-sm leading-relaxed">
-                          If we are unable to deliver the product completely due to a technical issue, system failure, 
+                          If we are unable to deliver the product completely due to a technical issue, system failure,
                           or an internal error from our side, you may be eligible for a full or partial refund.
                         </p>
                       </div>
@@ -363,14 +360,14 @@ export default function RefundPolicy() {
                 </div>
                 <div className="glass rounded-xl p-6 border border-white/5 ml-13">
                   <p className="text-gray-300 leading-relaxed">
-                    PaidPortfolio reserves the right to update or modify this refund policy at any time without prior notice. 
+                    PaidPortfolio reserves the right to update or modify this refund policy at any time without prior notice.
                     Continued use of our services means you accept the updated policy.
                   </p>
                 </div>
               </motion.div>
 
               {/* Contact CTA */}
-              <motion.div 
+              <motion.div
                 variants={fadeInUp}
                 className="glass-strong rounded-2xl p-8 border border-white/10 text-center mt-16"
               >
@@ -380,7 +377,7 @@ export default function RefundPolicy() {
                 <p className="text-gray-400 mb-6">
                   If you have any questions about our refund policy, please don't hesitate to reach out.
                 </p>
-                <a 
+                <a
                   href="/contact"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-medium rounded-lg hover:bg-gray-200 transition-colors"
                   data-testid="link-contact"

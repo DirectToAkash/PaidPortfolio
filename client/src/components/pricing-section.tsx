@@ -6,7 +6,7 @@ import { Link } from "wouter";
 const pricingPlans = [
   {
     name: "Starter Template",
-    price: 59,
+    price: 10,
     description: "Perfect for students and beginners",
     features: [
       "Pre-designed template",
@@ -22,7 +22,7 @@ const pricingPlans = [
   },
   {
     name: "Custom Portfolio",
-    price: 299,
+    price: 80,
     description: "For professionals who want to stand out",
     features: [
       "Fully custom design",
@@ -38,31 +38,13 @@ const pricingPlans = [
     cta: "Get Custom Portfolio",
     href: "/custom",
   },
-  {
-    name: "Enterprise",
-    price: 599,
-    description: "Complete branding package",
-    features: [
-      "Everything in Custom",
-      "Brand identity design",
-      "Multiple page website",
-      "Blog integration",
-      "Analytics setup",
-      "Dedicated manager",
-      "24/7 support",
-      "Lifetime updates",
-    ],
-    popular: false,
-    cta: "Contact Sales",
-    href: "/contact",
-  },
 ];
 
 export function PricingSection() {
   return (
     <section id="pricing" className="relative py-24 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-black via-[#050505] to-black" />
-      
+
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -82,7 +64,7 @@ export function PricingSection() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {pricingPlans.map((plan, index) => (
             <motion.div
               key={index}
@@ -100,13 +82,12 @@ export function PricingSection() {
                   </span>
                 </div>
               )}
-              
+
               <div
-                className={`glass rounded-xl p-8 h-full ${
-                  plan.popular
-                    ? "border-2 border-white/30 glow"
-                    : "border border-white/10"
-                }`}
+                className={`glass rounded-xl p-8 h-full ${plan.popular
+                  ? "border-2 border-white/30 glow"
+                  : "border border-white/10"
+                  }`}
               >
                 <div className="text-center mb-6">
                   <h3 className="text-xl font-semibold text-white mb-2">{plan.name}</h3>
@@ -128,11 +109,10 @@ export function PricingSection() {
 
                 <Link href={plan.href}>
                   <Button
-                    className={`w-full ${
-                      plan.popular
-                        ? "bg-white text-black hover:bg-white/90"
-                        : "bg-white/10 text-white hover:bg-white/20"
-                    }`}
+                    className={`w-full ${plan.popular
+                      ? "bg-white text-black hover:bg-white/90"
+                      : "bg-white/10 text-white hover:bg-white/20"
+                      }`}
                     data-testid={`button-pricing-${plan.name.toLowerCase().replace(' ', '-')}`}
                   >
                     {plan.cta}

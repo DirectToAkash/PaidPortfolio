@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
-import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,11 +18,11 @@ import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  MessageSquare, 
-  Palette, 
-  Code, 
-  Rocket, 
+import {
+  MessageSquare,
+  Palette,
+  Code,
+  Rocket,
   Check,
   CheckCircle,
   Loader2
@@ -143,7 +142,7 @@ export default function Custom() {
         <link rel="canonical" href="https://paidportfolio.com/custom" />
       </Helmet>
 
-      <Navbar />
+
 
       <main className="min-h-screen pt-24 pb-16">
         <div className="absolute inset-0 bg-black grid-pattern opacity-30 pointer-events-none" />
@@ -159,7 +158,7 @@ export default function Custom() {
               Custom<span className="text-glow"> Portfolio Service</span>
             </h1>
             <p className="text-white/60 max-w-2xl mx-auto">
-              Get a fully custom portfolio website designed and built from scratch, 
+              Get a fully custom portfolio website designed and built from scratch,
               tailored to your unique style and professional needs.
             </p>
           </motion.div>
@@ -213,7 +212,7 @@ export default function Custom() {
             >
               <div className="glass rounded-xl p-8">
                 <h2 className="text-2xl font-bold text-white mb-6">Request Your Custom Portfolio</h2>
-                
+
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

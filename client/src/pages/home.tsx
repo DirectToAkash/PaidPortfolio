@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { HeroSection } from "@/components/hero-section";
 import { PortfolioCarousel } from "@/components/portfolio-carousel";
@@ -37,21 +36,23 @@ export default function Home() {
         <meta property="og:type" content="website" />
         <link rel="canonical" href="https://paidportfolio.com" />
       </Helmet>
-      
-      <Navbar />
-      
+
       <main>
         <HeroSection />
-        <PortfolioCarousel />
+        <div className="hidden md:block">
+          <PortfolioCarousel />
+        </div>
         <WhyPortfolioSection />
-        <TemplatesPreviewSection />
+        <div className="hidden md:block">
+          <TemplatesPreviewSection />
+        </div>
         <CustomServiceSection />
         <FeaturesSection />
         <TestimonialsSection />
         <PricingSection />
         <CTASection />
       </main>
-      
+
       <Footer />
     </>
   );

@@ -1,7 +1,7 @@
-import { 
-  type User, 
-  type InsertUser, 
-  type PortfolioTemplate, 
+import {
+  type User,
+  type InsertUser,
+  type PortfolioTemplate,
   type InsertTemplate,
   type Order,
   type InsertOrder,
@@ -61,6 +61,7 @@ export class MemStorage implements IStorage {
     this.testimonials = new Map();
 
     this.seedData();
+    // Force rebuild to pick up new template data
   }
 
   private seedData() {
@@ -69,7 +70,8 @@ export class MemStorage implements IStorage {
       {
         name: "Developer Pro",
         description: "A sleek, modern portfolio template perfect for software developers and engineers. Features code snippets, project showcases, and GitHub integration.",
-        price: 79,
+        price: 10,
+        priceInr: 950,
         category: "Developer",
         previewImage: "https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=800&h=500&fit=crop",
         features: ["GitHub Integration", "Code Snippets", "Dark Mode", "Contact Form"],
@@ -82,7 +84,8 @@ export class MemStorage implements IStorage {
       {
         name: "Creative Studio",
         description: "Bold and artistic template for designers, photographers, and creative professionals. Stunning gallery layouts and smooth animations.",
-        price: 89,
+        price: 10,
+        priceInr: 950,
         category: "Designer",
         previewImage: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&h=500&fit=crop",
         features: ["Image Gallery", "Lightbox", "Animation Effects", "Portfolio Grid"],
@@ -95,7 +98,8 @@ export class MemStorage implements IStorage {
       {
         name: "Minimal Edge",
         description: "Clean and minimalist design that puts your work front and center. Perfect for those who appreciate simplicity.",
-        price: 59,
+        price: 10,
+        priceInr: 950,
         category: "Minimal",
         previewImage: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&h=500&fit=crop",
         features: ["Minimal Design", "Fast Loading", "SEO Optimized", "Mobile First"],
@@ -108,7 +112,8 @@ export class MemStorage implements IStorage {
       {
         name: "Tech Pioneer",
         description: "Futuristic template with cutting-edge design elements. Perfect for tech enthusiasts and innovators.",
-        price: 99,
+        price: 10,
+        priceInr: 950,
         category: "Developer",
         previewImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=500&fit=crop",
         features: ["3D Elements", "Particle Effects", "Terminal Style", "API Ready"],
@@ -121,7 +126,8 @@ export class MemStorage implements IStorage {
       {
         name: "Portfolio X",
         description: "Versatile and adaptable template that works for any profession. Easy to customize and personalize.",
-        price: 69,
+        price: 10,
+        priceInr: 950,
         category: "Creative",
         previewImage: "https://images.unsplash.com/photo-1522542550221-31fd8575f9f0?w=800&h=500&fit=crop",
         features: ["Multi-page", "Blog Ready", "Contact Form", "Social Links"],
@@ -134,7 +140,8 @@ export class MemStorage implements IStorage {
       {
         name: "Dark Matter",
         description: "A stunning dark-themed portfolio with elegant typography and subtle animations. Perfect for night owls.",
-        price: 79,
+        price: 10,
+        priceInr: 950,
         category: "Modern",
         previewImage: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=500&fit=crop",
         features: ["Dark Theme", "Smooth Scroll", "Lazy Loading", "SEO Ready"],
@@ -147,7 +154,8 @@ export class MemStorage implements IStorage {
       {
         name: "Starter Kit",
         description: "Perfect for beginners and students. Simple setup, easy customization, and comprehensive documentation.",
-        price: 49,
+        price: 10,
+        priceInr: 950,
         category: "Minimal",
         previewImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=500&fit=crop",
         features: ["Easy Setup", "Documentation", "Responsive", "Fast"],
@@ -160,7 +168,8 @@ export class MemStorage implements IStorage {
       {
         name: "Gradient Flow",
         description: "Eye-catching gradients and flowing animations create a memorable first impression.",
-        price: 69,
+        price: 10,
+        priceInr: 950,
         category: "Creative",
         previewImage: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=500&fit=crop",
         features: ["Gradient Backgrounds", "Smooth Animations", "Modern Layout", "Contact Form"],
@@ -169,6 +178,20 @@ export class MemStorage implements IStorage {
         isFeatured: false,
         rating: 4,
         reviewCount: 67,
+      },
+      {
+        name: "Open Book Portfolio",
+        description: "A personal portfolio template designed to showcase your work and personality. Features a clean layout and easy customization.",
+        price: 10,
+        priceInr: 950,
+        category: "Personal",
+        previewImage: "/portfolio-creative.png",
+        features: ["Personal Branding", "About Section", "Project Gallery", "Contact Link"],
+        techStack: ["React", "TailwindCSS"],
+        demoUrl: "https://directtoakash.github.io/NewPortfolio/",
+        isFeatured: true,
+        rating: 5,
+        reviewCount: 42,
       },
     ];
 
@@ -221,8 +244,8 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = randomUUID();
-    const user: User = { 
-      ...insertUser, 
+    const user: User = {
+      ...insertUser,
       id,
       email: insertUser.email || null,
       role: "user"
@@ -246,8 +269,8 @@ export class MemStorage implements IStorage {
 
   async createTemplate(insertTemplate: InsertTemplate): Promise<PortfolioTemplate> {
     const id = randomUUID();
-    const template: PortfolioTemplate = { 
-      ...insertTemplate, 
+    const template: PortfolioTemplate = {
+      ...insertTemplate,
       id,
       demoUrl: insertTemplate.demoUrl || null,
       isFeatured: insertTemplate.isFeatured ?? false,
@@ -255,6 +278,7 @@ export class MemStorage implements IStorage {
       reviewCount: insertTemplate.reviewCount ?? 0,
       features: insertTemplate.features || null,
       techStack: insertTemplate.techStack || null,
+      priceInr: insertTemplate.priceInr ?? 0,
     };
     this.templates.set(id, template);
     return template;
@@ -275,8 +299,8 @@ export class MemStorage implements IStorage {
 
   async createOrder(insertOrder: InsertOrder): Promise<Order> {
     const id = randomUUID();
-    const order: Order = { 
-      ...insertOrder, 
+    const order: Order = {
+      ...insertOrder,
       id,
       userId: insertOrder.userId || null,
       templateId: insertOrder.templateId || null,
@@ -297,8 +321,8 @@ export class MemStorage implements IStorage {
 
   async createCustomRequest(insertRequest: InsertCustomRequest): Promise<CustomRequest> {
     const id = randomUUID();
-    const request: CustomRequest = { 
-      ...insertRequest, 
+    const request: CustomRequest = {
+      ...insertRequest,
       id,
       phone: insertRequest.phone || null,
       profession: insertRequest.profession || null,
@@ -315,8 +339,8 @@ export class MemStorage implements IStorage {
 
   async createContactMessage(insertMessage: InsertContact): Promise<ContactMessage> {
     const id = randomUUID();
-    const message: ContactMessage = { 
-      ...insertMessage, 
+    const message: ContactMessage = {
+      ...insertMessage,
       id,
       status: "unread"
     };

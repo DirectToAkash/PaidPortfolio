@@ -8,7 +8,7 @@ const portfolioItems = [
     id: 1,
     name: "Developer Pro",
     category: "Developer",
-    price: 79,
+    price: 10,
     image: "https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=800&h=500&fit=crop",
     rating: 5,
   },
@@ -16,7 +16,7 @@ const portfolioItems = [
     id: 2,
     name: "Creative Studio",
     category: "Designer",
-    price: 89,
+    price: 10,
     image: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&h=500&fit=crop",
     rating: 5,
   },
@@ -24,7 +24,7 @@ const portfolioItems = [
     id: 3,
     name: "Minimal Edge",
     category: "Minimal",
-    price: 59,
+    price: 10,
     image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&h=500&fit=crop",
     rating: 4,
   },
@@ -32,7 +32,7 @@ const portfolioItems = [
     id: 4,
     name: "Tech Pioneer",
     category: "Developer",
-    price: 99,
+    price: 10,
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=500&fit=crop",
     rating: 5,
   },
@@ -40,9 +40,18 @@ const portfolioItems = [
     id: 5,
     name: "Portfolio X",
     category: "Creative",
-    price: 69,
+    price: 10,
     image: "https://images.unsplash.com/photo-1522542550221-31fd8575f9f0?w=800&h=500&fit=crop",
     rating: 4,
+  },
+  {
+    id: 6,
+    name: "Open Book Portfolio",
+    category: "Personal",
+    price: 10,
+    image: "/portfolio-creative.png",
+    rating: 5,
+    link: "https://directtoakash.github.io/NewPortfolio/",
   },
 ];
 
@@ -196,14 +205,26 @@ export function PortfolioCarousel() {
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-2xl font-bold text-white">${item.price}</span>
-                        <Button
-                          size="sm"
-                          className="bg-white text-black hover:bg-white/90"
-                          data-testid={`button-preview-${item.id}`}
-                        >
-                          <ExternalLink className="w-4 h-4 mr-1" />
-                          Preview
-                        </Button>
+                        {item.link ? (
+                          <a href={item.link} target="_blank" rel="noopener noreferrer">
+                            <Button
+                              size="sm"
+                              className="bg-white text-black hover:bg-white/90"
+                            >
+                              <ExternalLink className="w-4 h-4 mr-1" />
+                              Preview
+                            </Button>
+                          </a>
+                        ) : (
+                          <Button
+                            size="sm"
+                            className="bg-white text-black hover:bg-white/90"
+                            data-testid={`button-preview-${item.id}`}
+                          >
+                            <ExternalLink className="w-4 h-4 mr-1" />
+                            Preview
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -214,14 +235,14 @@ export function PortfolioCarousel() {
 
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-50 w-14 h-14 rounded-full bg-black/90 border border-white/30 flex items-center justify-center text-white transition-all hover:bg-white hover:text-black hover:scale-110 shadow-lg hover:shadow-white/25 backdrop-blur-sm"
+            className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-50 w-14 h-14 rounded-full bg-black/90 border border-white/30 items-center justify-center text-white transition-all hover:bg-white hover:text-black hover:scale-110 shadow-lg hover:shadow-white/25 backdrop-blur-sm"
             data-testid="button-carousel-prev"
           >
             <ChevronLeft className="w-8 h-8" />
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-50 w-14 h-14 rounded-full bg-black/90 border border-white/30 flex items-center justify-center text-white transition-all hover:bg-white hover:text-black hover:scale-110 shadow-lg hover:shadow-white/25 backdrop-blur-sm"
+            className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-50 w-14 h-14 rounded-full bg-black/90 border border-white/30 items-center justify-center text-white transition-all hover:bg-white hover:text-black hover:scale-110 shadow-lg hover:shadow-white/25 backdrop-blur-sm"
             data-testid="button-carousel-next"
           >
             <ChevronRight className="w-8 h-8" />
@@ -234,8 +255,8 @@ export function PortfolioCarousel() {
               key={index}
               onClick={() => setCurrentIndex(index)}
               className={`w-2 h-2 rounded-full transition-all ${index === currentIndex
-                  ? "w-8 bg-white"
-                  : "bg-white/30 hover:bg-white/50"
+                ? "w-8 bg-white"
+                : "bg-white/30 hover:bg-white/50"
                 }`}
               data-testid={`button-dot-${index}`}
             />

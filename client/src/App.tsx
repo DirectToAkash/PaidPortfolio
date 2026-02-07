@@ -1,3 +1,4 @@
+import { AnimatePresence } from "framer-motion";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -5,6 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { CustomCursor } from "@/components/custom-cursor";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SplashScreen } from "@/components/splash-screen";
+import { Navbar } from "@/components/navbar";
 import Home from "@/pages/home";
 import Templates from "@/pages/templates";
 import Custom from "@/pages/custom";
@@ -14,6 +17,7 @@ import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
 import NotFound from "@/pages/not-found";
 import Book from "@/pages/book";
+import { useState } from "react";
 
 function Router() {
   return (
@@ -32,10 +36,16 @@ function Router() {
 }
 
 function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <div className="min-h-screen bg-black text-white">
+          <AnimatePresence>
+            {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
+          </AnimatePresence>
+          <Navbar showSplash={showSplash} />
           <Toaster />
           <CustomCursor />
           <WhatsAppButton />

@@ -8,7 +8,7 @@ const templates = [
     id: 1,
     name: "Developer Pro",
     category: "Developer",
-    price: 79,
+    price: 10,
     image: "https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=400&h=300&fit=crop",
     rating: 5,
     reviews: 124,
@@ -17,7 +17,7 @@ const templates = [
     id: 2,
     name: "Creative Studio",
     category: "Designer",
-    price: 89,
+    price: 10,
     image: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=400&h=300&fit=crop",
     rating: 5,
     reviews: 98,
@@ -26,7 +26,7 @@ const templates = [
     id: 3,
     name: "Minimal Edge",
     category: "Minimal",
-    price: 59,
+    price: 10,
     image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&h=300&fit=crop",
     rating: 4,
     reviews: 156,
@@ -35,7 +35,7 @@ const templates = [
     id: 4,
     name: "Tech Pioneer",
     category: "Developer",
-    price: 99,
+    price: 10,
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
     rating: 5,
     reviews: 87,
@@ -44,7 +44,7 @@ const templates = [
     id: 5,
     name: "Portfolio X",
     category: "Creative",
-    price: 69,
+    price: 10,
     image: "https://images.unsplash.com/photo-1522542550221-31fd8575f9f0?w=400&h=300&fit=crop",
     rating: 4,
     reviews: 112,
@@ -53,10 +53,20 @@ const templates = [
     id: 6,
     name: "Dark Matter",
     category: "Modern",
-    price: 79,
+    price: 10,
     image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=300&fit=crop",
     rating: 5,
     reviews: 203,
+  },
+  {
+    id: 7,
+    name: "Open Book Portfolio",
+    category: "Personal",
+    price: 10,
+    image: "/portfolio-creative.png",
+    rating: 5,
+    reviews: 42,
+    link: "https://directtoakash.github.io/NewPortfolio/",
   },
 ];
 
@@ -64,7 +74,7 @@ export function TemplatesPreviewSection() {
   return (
     <section className="relative py-24 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-black via-[#050505] to-black" />
-      
+
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -118,13 +128,24 @@ export function TemplatesPreviewSection() {
                     </span>
                   </div>
                   <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button
-                      size="sm"
-                      className="bg-white text-black hover:bg-white/90"
-                      data-testid={`button-quick-view-${template.id}`}
-                    >
-                      Quick View
-                    </Button>
+                    {template.link ? (
+                      <a href={template.link} target="_blank" rel="noopener noreferrer">
+                        <Button
+                          size="sm"
+                          className="bg-white text-black hover:bg-white/90"
+                        >
+                          Quick View
+                        </Button>
+                      </a>
+                    ) : (
+                      <Button
+                        size="sm"
+                        className="bg-white text-black hover:bg-white/90"
+                        data-testid={`button-quick-view-${template.id}`}
+                      >
+                        Quick View
+                      </Button>
+                    )}
                   </div>
                 </div>
                 <div className="p-5">
@@ -139,9 +160,8 @@ export function TemplatesPreviewSection() {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`w-3 h-3 ${
-                            i < template.rating ? "fill-white text-white" : "text-white/30"
-                          }`}
+                          className={`w-3 h-3 ${i < template.rating ? "fill-white text-white" : "text-white/30"
+                            }`}
                         />
                       ))}
                     </div>

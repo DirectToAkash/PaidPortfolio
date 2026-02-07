@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { FaWhatsapp } from "react-icons/fa";
 
 export function WhatsAppButton() {
-  const phoneNumber = "1234567890"; // TODO: Replace with actual number
+  const phoneNumber = "919984709265"; // Updated to user's number
   const whatsappUrl = `https://wa.me/${phoneNumber}`;
 
   return (

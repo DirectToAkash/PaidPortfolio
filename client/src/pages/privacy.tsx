@@ -1,12 +1,11 @@
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
-import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { 
-  Shield, 
-  Database, 
-  CreditCard, 
+import {
+  Shield,
+  Database,
+  CreditCard,
   Cookie,
   Share2,
   UserCheck,
@@ -93,23 +92,21 @@ export default function Privacy() {
         <link rel="canonical" href="https://paidportfolio.com/privacy" />
       </Helmet>
 
-      <Navbar />
-
       <main className="min-h-screen bg-black text-white overflow-hidden">
         {/* Animated Background */}
         <div className="fixed inset-0 pointer-events-none">
           <div className="absolute top-0 left-1/3 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-transparent rounded-full blur-3xl animate-pulse" />
           <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-teal-500/5 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-white/3 to-transparent rounded-full blur-3xl" />
-          
-          <div 
+
+          <div
             className="absolute inset-0 opacity-[0.03]"
             style={{
               backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
               backgroundSize: '50px 50px'
             }}
           />
-          
+
           <div className="absolute top-24 left-20 w-2 h-2 bg-emerald-400/20 rounded-full animate-float" />
           <div className="absolute top-48 right-16 w-1 h-1 bg-teal-400/30 rounded-full animate-float" style={{ animationDelay: "0.5s" }} />
           <div className="absolute bottom-48 left-1/4 w-1.5 h-1.5 bg-white/15 rounded-full animate-float" style={{ animationDelay: "1s" }} />
@@ -172,7 +169,7 @@ export default function Privacy() {
               className="space-y-6"
             >
               {sections.map((section, index) => (
-                <motion.div 
+                <motion.div
                   key={index}
                   variants={fadeInUp}
                   className="glass rounded-2xl p-6 border border-white/10 hover:border-emerald-500/20 transition-colors"
@@ -204,7 +201,7 @@ export default function Privacy() {
               ))}
 
               {/* Contact Section */}
-              <motion.div 
+              <motion.div
                 variants={fadeInUp}
                 className="glass-strong rounded-2xl p-8 border border-white/10 text-center mt-12"
               >
@@ -219,7 +216,7 @@ export default function Privacy() {
                   <span className="text-white font-medium">directtoakash@gmail.com</span>
                 </div>
                 <div className="block">
-                  <a 
+                  <a
                     href="/contact"
                     className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-medium rounded-lg hover:opacity-90 transition-opacity"
                     data-testid="link-contact"

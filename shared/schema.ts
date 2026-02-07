@@ -27,6 +27,7 @@ export const portfolioTemplates = pgTable("portfolio_templates", {
   name: text("name").notNull(),
   description: text("description").notNull(),
   price: integer("price").notNull(),
+  priceInr: integer("price_inr").default(950),
   category: text("category").notNull(),
   previewImage: text("preview_image").notNull(),
   features: text("features").array(),

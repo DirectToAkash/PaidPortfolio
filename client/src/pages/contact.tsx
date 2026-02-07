@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
-import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -119,8 +118,6 @@ export default function Contact() {
         />
         <link rel="canonical" href="https://paidportfolio.com/contact" />
       </Helmet>
-
-      <Navbar />
 
       <main className="min-h-screen pt-24 pb-16">
         <div className="absolute inset-0 bg-black grid-pattern opacity-30 pointer-events-none" />

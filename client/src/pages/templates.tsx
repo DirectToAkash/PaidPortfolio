@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
-import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { PortfolioTemplate } from "@shared/schema";
 
-const categories = ["All", "Developer", "Designer", "Minimal", "Creative", "Modern"];
+const categories = ["All", "Developer", "Designer", "Minimal", "Creative", "Modern", "Personal"];
 
 export default function Templates() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,8 +45,6 @@ export default function Templates() {
         <link rel="canonical" href="https://paidportfolio.com/templates" />
       </Helmet>
 
-      <Navbar />
-
       <main className="min-h-screen pt-24 pb-16">
         <div className="absolute inset-0 bg-black grid-pattern opacity-30 pointer-events-none" />
 
@@ -62,7 +59,7 @@ export default function Templates() {
               Portfolio<span className="text-glow"> Templates</span>
             </h1>
             <p className="text-white/60 max-w-2xl mx-auto">
-              Choose from our collection of premium, hand-crafted portfolio templates. 
+              Choose from our collection of premium, hand-crafted portfolio templates.
               All templates are fully responsive and easy to customize.
             </p>
           </motion.div>
@@ -186,9 +183,8 @@ export default function Templates() {
                           {[...Array(5)].map((_, i) => (
                             <Star
                               key={i}
-                              className={`w-3 h-3 ${
-                                i < (template.rating || 5) ? "fill-white text-white" : "text-white/30"
-                              }`}
+                              className={`w-3 h-3 ${i < (template.rating || 5) ? "fill-white text-white" : "text-white/30"
+                                }`}
                             />
                           ))}
                           <span className="text-xs text-white/50 ml-1">

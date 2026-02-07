@@ -11,7 +11,7 @@ const navLinks = [
   { href: "/contact", label: "Contact" },
 ];
 
-export function Navbar() {
+export function Navbar({ showSplash = false }: { showSplash?: boolean }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [location] = useLocation();
@@ -26,9 +26,6 @@ export function Navbar() {
 
   return (
     <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "glass-strong" : "bg-transparent"
         }`}
     >
@@ -40,12 +37,22 @@ export function Navbar() {
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="w-8 h-8 flex items-center justify-center overflow-hidden">
+              <motion.div
+                className="w-8 h-8 flex items-center justify-center overflow-hidden"
+                layoutId="brand-logo"
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+              >
                 <img src="/logo-icon.png" alt="PaidPortfolio Logo" className="w-full h-full object-cover" />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-white" data-testid="text-logo">
+              </motion.div>
+              <motion.span
+                className="text-xl font-bold tracking-tight text-white"
+                data-testid="text-logo"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: showSplash ? 0 : 1, x: showSplash ? -20 : 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
                 PaidPortfolio
-              </span>
+              </motion.span>
             </motion.div>
           </Link>
 
