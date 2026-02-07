@@ -169,7 +169,7 @@ export async function registerRoutes(
         <p><strong>Email:</strong> ${message.email}</p>
         <p><strong>Subject:</strong> ${message.subject}</p>
         <h3>Message:</h3>
-        <p>${message.message}</p>
+        <div style="white-space: pre-wrap; font-family: monospace; background: #f5f5f5; padding: 10px; border-radius: 5px;">${message.message}</div>
         `
       );
 
