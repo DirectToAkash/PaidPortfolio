@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ExternalLink, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const portfolioItems = [
   {
@@ -44,6 +45,11 @@ const portfolioItems = [
 export function PortfolioCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const isMobile = useIsMobile();
+
+  // Touch handling state
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % portfolioItems.length);
@@ -52,6 +58,37 @@ export function PortfolioCarousel() {
   const prevSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev - 1 + portfolioItems.length) % portfolioItems.length);
   }, []);
+
+  // Handle touch events
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+    setIsPaused(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) {
+      setIsPaused(false);
+      return;
+    }
+
+    const distance = touchStartX.current - touchEndX.current;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+
+    touchStartX.current = null;
+    touchEndX.current = null;
+    setIsPaused(false);
+  };
 
   useEffect(() => {
     if (isPaused) return;
@@ -66,6 +103,44 @@ export function PortfolioCarousel() {
       ? normalizedDiff - portfolioItems.length
       : normalizedDiff;
 
+    // Mobile-specific adjustments (stacked cards/simpler view) or just adjusted scaling/position
+    if (isMobile) {
+      if (adjustedDiff === 0) {
+        return {
+          x: 0,
+          scale: 1,
+          rotateY: 0,
+          z: 100,
+          opacity: 1,
+        };
+      } else if (adjustedDiff === 1 || adjustedDiff === -1 * (portfolioItems.length - 1)) {
+        return {
+          x: 100, // Reduced translation
+          scale: 0.9,
+          rotateY: 0, // No rotation to avoid clipping 
+          z: 50,
+          opacity: 0.5,
+        };
+      } else if (adjustedDiff === -1 || adjustedDiff === portfolioItems.length - 1) {
+        return {
+          x: -100, // Reduced translation
+          scale: 0.9,
+          rotateY: 0,
+          z: 50,
+          opacity: 0.5,
+        };
+      } else {
+        return {
+          x: adjustedDiff > 0 ? 200 : -200,
+          scale: 0.8,
+          rotateY: 0,
+          z: -50,
+          opacity: 0,
+        };
+      }
+    }
+
+    // Desktop styles (preserved)
     if (adjustedDiff === 0) {
       return {
         x: 0,
@@ -138,9 +213,12 @@ export function PortfolioCarousel() {
         </motion.div>
 
         <div
-          className="relative h-[450px] perspective-1000"
+          className="relative h-[450px] perspective-1000 touch-pan-y"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
           style={{ perspective: "1000px" }}
         >
           <div className="absolute inset-0 flex items-center justify-center">
@@ -149,7 +227,7 @@ export function PortfolioCarousel() {
               return (
                 <motion.div
                   key={item.id}
-                  className="absolute w-[380px] cursor-pointer"
+                  className="absolute w-[300px] sm:w-[380px] cursor-pointer"
                   animate={{
                     x: style.x,
                     scale: style.scale,
@@ -166,7 +244,7 @@ export function PortfolioCarousel() {
                     className={`glass rounded-xl overflow-hidden ${index === currentIndex ? "glow-white animate-pulse-glow" : ""
                       }`}
                   >
-                    <div className="relative h-56 overflow-hidden">
+                    <div className="relative h-48 sm:h-56 overflow-hidden">
                       <img
                         src={item.image}
                         alt={item.name}
@@ -252,3 +330,4 @@ export function PortfolioCarousel() {
     </section>
   );
 }
+

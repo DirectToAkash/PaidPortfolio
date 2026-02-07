@@ -39,13 +39,9 @@ export default function Home() {
 
       <main>
         <HeroSection />
-        <div className="hidden md:block">
-          <PortfolioCarousel />
-        </div>
+        <PortfolioCarousel />
         <WhyPortfolioSection />
-        <div className="hidden md:block">
-          <TemplatesPreviewSection />
-        </div>
+        <TemplatesPreviewSection />
         <CustomServiceSection />
         <FeaturesSection />
         <TestimonialsSection />
