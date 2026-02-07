@@ -38,7 +38,9 @@ async function sendEmailNotification(to: string, subject: string, html: string) 
     greetingTimeout: 30000,   // 30 seconds
     socketTimeout: 30000,     // 30 seconds
     debug: true,              // Enable debug output
-    logger: true              // Log to console
+    logger: true,             // Log to console
+    // Force IPv4 for the socket connection
+    family: 4
   });
 
   try {
@@ -78,20 +80,20 @@ export async function registerRoutes(
       // 1. DNS Check
       let dnsInfo: any = "pending";
       try {
-        const lookup = await dns.promises.lookup("smtp.gmail.com");
+        const lookup = await dns.promises.lookup("smtp.gmail.com", { family: 4 });
         dnsInfo = { address: lookup.address, family: lookup.family };
       } catch (e: any) {
         dnsInfo = { error: e.message };
       }
 
-      // 2. TCP Port Check
+      // 2. TCP Port Check (Force IPv4)
       const checkPort = (port: number) => new Promise<string>((resolve) => {
         const socket = new net.Socket();
         socket.setTimeout(3000);
-        socket.on('connect', () => { socket.destroy(); resolve("open"); });
+        socket.on('connect', () => { socket.destroy(); resolve("open (IPv4)"); });
         socket.on('timeout', () => { socket.destroy(); resolve("timeout"); });
         socket.on('error', (e) => { socket.destroy(); resolve(`error: ${e.message}`); });
-        socket.connect(port, "smtp.gmail.com");
+        socket.connect({ port, host: "smtp.gmail.com", family: 4 });
       });
 
       const port587 = await checkPort(587);
