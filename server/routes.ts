@@ -2,6 +2,8 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertCustomRequestSchema, insertContactSchema, insertOrderSchema } from "@shared/schema";
+import { z } from "zod";
+import nodemailer from "nodemailer";
 import dns from "dns";
 import net from "net";
 
