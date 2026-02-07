@@ -9,11 +9,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { PortfolioTemplate } from "@shared/schema";
 
-const categories = ["All", "Developer", "Designer", "Minimal", "Creative", "Modern", "Personal"];
+const categories = ["All", "Developer", "Designer", "Minimal", "Creative", "Modern", "Personal", "Professional", "Medical"];
+
+import { useCurrency } from "@/hooks/use-currency";
 
 export default function Templates() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const { formatPrice } = useCurrency();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -57,6 +60,7 @@ export default function Templates() {
           >
             <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
               Portfolio<span className="text-glow"> Templates</span>
+              <span className="hidden">v2.1</span>
             </h1>
             <p className="text-white/60 max-w-2xl mx-auto">
               Choose from our collection of premium, hand-crafted portfolio templates.
@@ -175,7 +179,9 @@ export default function Templates() {
                     <div className="p-5">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-lg font-semibold text-white">{template.name}</h3>
-                        <span className="text-xl font-bold text-white">${template.price}</span>
+                        <span className="text-xl font-bold text-white">
+                          {formatPrice(template.price, template.priceInr || 950)}
+                        </span>
                       </div>
                       <p className="text-sm text-white/50 mb-3 line-clamp-2">{template.description}</p>
                       <div className="flex items-center justify-between">

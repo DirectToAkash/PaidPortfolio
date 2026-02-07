@@ -2,75 +2,57 @@ import { motion } from "framer-motion";
 import { ArrowRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { useCurrency } from "@/hooks/use-currency";
 
 const templates = [
   {
     id: 1,
-    name: "Developer Pro",
-    category: "Developer",
-    price: 10,
-    image: "https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=400&h=300&fit=crop",
-    rating: 5,
-    reviews: 124,
-  },
-  {
-    id: 2,
     name: "Creative Studio",
     category: "Designer",
     price: 10,
+    priceInr: 950,
     image: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=400&h=300&fit=crop",
     rating: 5,
     reviews: 98,
   },
   {
-    id: 3,
-    name: "Minimal Edge",
-    category: "Minimal",
-    price: 10,
-    image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&h=300&fit=crop",
-    rating: 4,
-    reviews: 156,
-  },
-  {
-    id: 4,
-    name: "Tech Pioneer",
-    category: "Developer",
-    price: 10,
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
-    rating: 5,
-    reviews: 87,
-  },
-  {
-    id: 5,
-    name: "Portfolio X",
-    category: "Creative",
-    price: 10,
-    image: "https://images.unsplash.com/photo-1522542550221-31fd8575f9f0?w=400&h=300&fit=crop",
-    rating: 4,
-    reviews: 112,
-  },
-  {
-    id: 6,
-    name: "Dark Matter",
-    category: "Modern",
-    price: 10,
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=300&fit=crop",
-    rating: 5,
-    reviews: 203,
-  },
-  {
-    id: 7,
+    id: 2,
     name: "Open Book Portfolio",
     category: "Personal",
     price: 10,
+    priceInr: 950,
     image: "/portfolio-creative.png",
     rating: 5,
     reviews: 42,
     link: "https://directtoakash.github.io/NewPortfolio/",
   },
+  {
+    id: 3,
+    name: "Advocate Portfolio",
+    category: "Professional",
+    price: 10,
+    priceInr: 950,
+    image: "/portfolio-advocate.png",
+    rating: 5,
+    reviews: 15,
+    link: "https://advocateportfolio.lovable.app/",
+  },
+  {
+    id: 4,
+    name: "Dentist Portfolio",
+    category: "Medical",
+    price: 10,
+    priceInr: 950,
+    image: "/portfolio-dentist.png",
+    rating: 5,
+    reviews: 12,
+    link: "https://dentistportfolio.lovable.app/",
+  },
 ];
 
 export function TemplatesPreviewSection() {
+  const { formatPrice } = useCurrency();
+
   return (
     <section className="relative py-24 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-black via-[#050505] to-black" />
@@ -153,7 +135,9 @@ export function TemplatesPreviewSection() {
                     <h3 className="text-lg font-semibold text-white group-hover:text-glow transition-all">
                       {template.name}
                     </h3>
-                    <span className="text-xl font-bold text-white">${template.price}</span>
+                    <span className="text-xl font-bold text-white">
+                      {formatPrice(template.price, template.priceInr)}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-white/60">
                     <div className="flex items-center gap-1">
@@ -176,3 +160,4 @@ export function TemplatesPreviewSection() {
     </section>
   );
 }
+

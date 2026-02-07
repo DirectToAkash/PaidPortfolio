@@ -2,11 +2,13 @@ import { motion } from "framer-motion";
 import { Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { useCurrency } from "@/hooks/use-currency";
 
 const pricingPlans = [
   {
     name: "Starter Template",
     price: 10,
+    priceInr: 950,
     description: "Perfect for students and beginners",
     features: [
       "Pre-designed template",
@@ -23,6 +25,7 @@ const pricingPlans = [
   {
     name: "Custom Portfolio",
     price: 80,
+    priceInr: 6500,
     description: "For professionals who want to stand out",
     features: [
       "Fully custom design",
@@ -41,6 +44,8 @@ const pricingPlans = [
 ];
 
 export function PricingSection() {
+  const { currency, formatPrice } = useCurrency();
+
   return (
     <section id="pricing" className="relative py-24 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-black via-[#050505] to-black" />
@@ -93,7 +98,9 @@ export function PricingSection() {
                   <h3 className="text-xl font-semibold text-white mb-2">{plan.name}</h3>
                   <p className="text-sm text-white/50 mb-4">{plan.description}</p>
                   <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-4xl font-bold text-white">${plan.price}</span>
+                    <span className="text-4xl font-bold text-white">
+                      {formatPrice(plan.price, plan.priceInr)}
+                    </span>
                     <span className="text-white/50">one-time</span>
                   </div>
                 </div>
@@ -130,7 +137,7 @@ export function PricingSection() {
           transition={{ delay: 0.5 }}
           className="text-center text-white/40 text-sm mt-8"
         >
-          All prices in USD. No hidden fees. 30-day money-back guarantee.
+          All prices in {currency}. No hidden fees. 30-day money-back guarantee.
         </motion.p>
       </div>
     </section>
