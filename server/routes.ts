@@ -28,6 +28,10 @@ async function sendEmailNotification(to: string, subject: string, html: string) 
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
+    // Add timeouts to prevent hanging
+    connectionTimeout: 10000, // 10 seconds
+    greetingTimeout: 5000,    // 5 seconds
+    socketTimeout: 10000,     // 10 seconds
   });
 
   try {
