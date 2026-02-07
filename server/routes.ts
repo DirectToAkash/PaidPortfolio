@@ -2,9 +2,8 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertCustomRequestSchema, insertContactSchema, insertOrderSchema } from "@shared/schema";
-import { z } from "zod";
-import nodemailer from "nodemailer";
 import dns from "dns";
+import net from "net";
 
 // Force IPv4 to avoid timeouts on some hosting providers
 dns.setDefaultResultOrder("ipv4first");
@@ -13,11 +12,11 @@ dns.setDefaultResultOrder("ipv4first");
 
 
 async function sendEmailNotification(to: string, subject: string, html: string) {
+  //... (keep existing function logic helper) ...
   // Log configuration status (masked for security)
   const user = process.env.EMAIL_USER;
   const hasPass = !!process.env.EMAIL_PASS;
-  console.log(`[Email Debug] Attempting to send email to ${to}`);
-  console.log(`[Email Debug] Config - User: ${user ? user.substring(0, 3) + "***" : "MISSING"}, Pass: ${hasPass ? "PRESENT" : "MISSING"}`);
+  // console.log(`[Email Debug] ... `); // Keep existing logs or commented
 
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     console.warn("Email credentials not found. Skipping email notification.");
@@ -70,13 +69,41 @@ export async function registerRoutes(
   // Email Test API - Temporary for debugging
   app.get("/api/test-email", async (req, res) => {
     try {
-      // Debug info to verify env vars in production
+      // Diagnostic checks
       const user = process.env.EMAIL_USER;
       const pass = process.env.EMAIL_PASS;
+
+      // 1. DNS Check
+      let dnsInfo: any = "pending";
+      try {
+        const lookup = await dns.promises.lookup("smtp.gmail.com");
+        dnsInfo = { address: lookup.address, family: lookup.family };
+      } catch (e: any) {
+        dnsInfo = { error: e.message };
+      }
+
+      // 2. TCP Port Check
+      const checkPort = (port: number) => new Promise<string>((resolve) => {
+        const socket = new net.Socket();
+        socket.setTimeout(3000);
+        socket.on('connect', () => { socket.destroy(); resolve("open"); });
+        socket.on('timeout', () => { socket.destroy(); resolve("timeout"); });
+        socket.on('error', (e) => { socket.destroy(); resolve(`error: ${e.message}`); });
+        socket.connect(port, "smtp.gmail.com");
+      });
+
+      const port587 = await checkPort(587);
+      const port465 = await checkPort(465);
+
       const debugInfo = {
         hasUser: !!user,
         hasPass: !!pass,
         userPrefix: user ? user.substring(0, 3) + "***" : "MISSING",
+        network: {
+          dns: dnsInfo,
+          port587: port587,
+          port465: port465
+        }
       };
 
       console.log("Test email debug:", debugInfo);
