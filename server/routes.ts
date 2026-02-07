@@ -4,6 +4,10 @@ import { storage } from "./storage";
 import { insertCustomRequestSchema, insertContactSchema, insertOrderSchema } from "@shared/schema";
 import { z } from "zod";
 import nodemailer from "nodemailer";
+import dns from "dns";
+
+// Force IPv4 to avoid timeouts on some hosting providers
+dns.setDefaultResultOrder("ipv4first");
 
 // Transporter will be created on demand to ensure env vars are loaded
 
@@ -23,15 +27,17 @@ async function sendEmailNotification(to: string, subject: string, html: string) 
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
-    secure: false, // true for 465, false for other ports
+    secure: false,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
-    // Add timeouts to prevent hanging
-    connectionTimeout: 10000, // 10 seconds
-    greetingTimeout: 5000,    // 5 seconds
-    socketTimeout: 10000,     // 10 seconds
+    // Increased timeouts
+    connectionTimeout: 30000, // 30 seconds
+    greetingTimeout: 30000,   // 30 seconds
+    socketTimeout: 30000,     // 30 seconds
+    debug: true,              // Enable debug output
+    logger: true              // Log to console
   });
 
   try {
