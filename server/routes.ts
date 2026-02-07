@@ -17,7 +17,7 @@ async function sendEmailNotification(to: string, subject: string, html: string) 
 
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     console.warn("Email credentials not found. Skipping email notification.");
-    return false;
+    return { success: false, error: "Missing credentials" };
   }
 
   const transporter = nodemailer.createTransport({
@@ -42,14 +42,15 @@ async function sendEmailNotification(to: string, subject: string, html: string) 
       html,
     });
     console.log("Email sent successfully. MessageId:", info.messageId);
-    return true;
+    return { success: true };
   } catch (error) {
     console.error("Error sending email:", error);
     // Log the full error object for debugging in production
     if (error instanceof Error) {
       console.error("Stack:", error.stack);
+      return { success: false, error: error.message };
     }
-    return false;
+    return { success: false, error: String(error) };
   }
 }
 
@@ -60,7 +61,6 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
 
-  // Email Test API - Temporary for debugging
   // Email Test API - Temporary for debugging
   app.get("/api/test-email", async (req, res) => {
     try {
@@ -81,10 +81,10 @@ export async function registerRoutes(
         "<h1>It Works!</h1><p>If you are seeing this, the email configuration is correct.</p>"
       );
 
-      if (result) {
+      if (result.success) {
         res.json({ success: true, message: "Email sent successfully", debug: debugInfo });
       } else {
-        res.status(500).json({ success: false, message: "Failed to send email. Check server logs.", debug: debugInfo });
+        res.status(500).json({ success: false, message: result.error || "Failed to send email", debug: debugInfo });
       }
     } catch (error) {
       res.status(500).json({ success: false, message: "Error triggering email", error: String(error) });
@@ -160,7 +160,7 @@ export async function registerRoutes(
       const request = await storage.createCustomRequest(validatedData);
 
       // Send notification email
-      const success = await sendEmailNotification(
+      const result = await sendEmailNotification(
         "directtoakash@gmail.com",
         "New Custom Portfolio Request",
         `
@@ -176,7 +176,7 @@ export async function registerRoutes(
         `
       );
 
-      res.status(201).json({ ...request, emailSent: success });
+      res.status(201).json({ ...request, emailSent: result.success });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Invalid request data", details: error.errors });
@@ -217,7 +217,7 @@ export async function registerRoutes(
       );
 
       // Send confirmation email to User
-      const success = await sendEmailNotification(
+      const result = await sendEmailNotification(
         message.email,
         "Booking Confirmation - PaidPortfolio",
         `
@@ -232,7 +232,7 @@ export async function registerRoutes(
         `
       );
 
-      res.status(201).json({ ...message, emailSent: success });
+      res.status(201).json({ ...message, emailSent: result.success });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Invalid contact data", details: error.errors });
