@@ -3,39 +3,24 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertCustomRequestSchema, insertContactSchema, insertOrderSchema } from "@shared/schema";
 import { z } from "zod";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-// Transporter will be created on demand to ensure env vars are loaded
-
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendEmailNotification(to: string, subject: string, html: string) {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.warn("Email credentials not found. Skipping email notification.");
+  if (!process.env.RESEND_API_KEY) {
+    console.warn("Resend API key not found. Skipping email notification.");
     return false;
   }
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-    // Increased timeouts
-    connectionTimeout: 30000, // 30 seconds
-    greetingTimeout: 30000,   // 30 seconds
-    socketTimeout: 30000,     // 30 seconds
-  });
-
   try {
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+    const data = await resend.emails.send({
+      from: "PaidPortfolio <onboarding@resend.dev>",
       to,
       subject,
       html,
     });
-    console.log("Email sent successfully. MessageId:", info.messageId);
+    console.log("Email sent successfully. ID:", data.id);
     return true;
   } catch (error) {
     console.error("Error sending email:", error);
