@@ -43,7 +43,7 @@ const customRequestFormSchema = insertCustomRequestSchema.extend({
   phone: z.string().optional(),
   profession: z.string().min(1, "Please select your profession"),
   budget: z.string().min(1, "Please select a budget range"),
-  timeline: z.string().min(1, "Please select a timeline"),
+  timeline: z.string().default("Flexible"), // Default value as option is removed
   description: z.string().min(20, "Please provide at least 20 characters describing your needs"),
 });
 
@@ -98,7 +98,7 @@ export default function Custom() {
       phone: "",
       profession: "",
       budget: "",
-      timeline: "",
+      timeline: "Flexible", // Default value
       description: "",
     },
   });
@@ -196,11 +196,11 @@ export default function Custom() {
 
               <div className="glass rounded-xl p-6 mt-8">
                 <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-4xl font-bold text-white">$299</span>
+                  <span className="text-4xl font-bold text-white">$10</span>
                   <span className="text-white/50">starting price</span>
                 </div>
                 <p className="text-sm text-white/60">
-                  Final price depends on project complexity. Average project: $299-$599
+                  Final price depends on project complexity. Average project: $10-$100
                 </p>
               </div>
             </motion.div>
@@ -287,6 +287,7 @@ export default function Custom() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
+                                <SelectItem value="working-professional">Working Professional</SelectItem>
                                 <SelectItem value="developer">Developer</SelectItem>
                                 <SelectItem value="designer">Designer</SelectItem>
                                 <SelectItem value="student">Student</SelectItem>
@@ -314,39 +315,16 @@ export default function Custom() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="299-399">$299 - $399</SelectItem>
-                                <SelectItem value="400-499">$400 - $499</SelectItem>
-                                <SelectItem value="500-599">$500 - $599</SelectItem>
-                                <SelectItem value="600+">$600+</SelectItem>
+                                <SelectItem value="10-30">$10 - $30</SelectItem>
+                                <SelectItem value="30-60">$30 - $60</SelectItem>
+                                <SelectItem value="60-100">$60 - $100</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                      <FormField
-                        control={form.control}
-                        name="timeline"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-white/70">Timeline</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger className="bg-white/5 border-white/10 text-white" data-testid="select-timeline">
-                                  <SelectValue placeholder="Select timeline" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="1-2-weeks">1-2 Weeks</SelectItem>
-                                <SelectItem value="2-4-weeks">2-4 Weeks</SelectItem>
-                                <SelectItem value="1-month">1 Month+</SelectItem>
-                                <SelectItem value="flexible">Flexible</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      {/* Timeline field removed from UI but kept in data */}
                     </div>
 
                     <FormField
