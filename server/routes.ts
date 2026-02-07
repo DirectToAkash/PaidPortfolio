@@ -61,17 +61,30 @@ export async function registerRoutes(
 ): Promise<Server> {
 
   // Email Test API - Temporary for debugging
+  // Email Test API - Temporary for debugging
   app.get("/api/test-email", async (req, res) => {
     try {
+      // Debug info to verify env vars in production
+      const user = process.env.EMAIL_USER;
+      const pass = process.env.EMAIL_PASS;
+      const debugInfo = {
+        hasUser: !!user,
+        hasPass: !!pass,
+        userPrefix: user ? user.substring(0, 3) + "***" : "MISSING",
+      };
+
+      console.log("Test email debug:", debugInfo);
+
       const result = await sendEmailNotification(
         "directtoakash@gmail.com",
         "Test Email from Production",
         "<h1>It Works!</h1><p>If you are seeing this, the email configuration is correct.</p>"
       );
+
       if (result) {
-        res.json({ success: true, message: "Email sent successfully" });
+        res.json({ success: true, message: "Email sent successfully", debug: debugInfo });
       } else {
-        res.status(500).json({ success: false, message: "Failed to send email. Check server logs." });
+        res.status(500).json({ success: false, message: "Failed to send email. Check server logs.", debug: debugInfo });
       }
     } catch (error) {
       res.status(500).json({ success: false, message: "Error triggering email", error: String(error) });
