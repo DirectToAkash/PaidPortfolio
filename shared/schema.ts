@@ -54,10 +54,17 @@ export const orders = pgTable("orders", {
   amount: integer("amount").notNull(),
   customerEmail: text("customer_email").notNull(),
   customerName: text("customer_name").notNull(),
+  razorpayOrderId: text("razorpay_order_id"),
+  razorpayPaymentId: text("razorpay_payment_id"),
+  razorpaySignature: text("razorpay_signature"),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const insertOrderSchema = createInsertSchema(orders).omit({
   id: true,
+  razorpayPaymentId: true,
+  razorpaySignature: true,
+  createdAt: true,
 });
 
 export type InsertOrder = z.infer<typeof insertOrderSchema>;

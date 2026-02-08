@@ -4,6 +4,8 @@ import { storage } from "./storage";
 import { insertCustomRequestSchema, insertContactSchema, insertOrderSchema } from "@shared/schema";
 import { z } from "zod";
 import { Resend } from "resend";
+import Razorpay from "razorpay";
+import crypto from "crypto";
 
 async function sendEmailNotification(to: string, subject: string, html: string) {
   if (!process.env.RESEND_API_KEY) {
@@ -80,15 +82,117 @@ export async function registerRoutes(
   // Orders API
   app.post("/api/orders", async (req, res) => {
     try {
+      if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+        throw new Error("Razorpay credentials missing");
+      }
+
+      const razorpay = new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET,
+      });
+
       const validatedData = insertOrderSchema.parse(req.body);
-      const order = await storage.createOrder(validatedData);
-      res.status(201).json(order);
+
+      // Create Razorpay Order
+      const options = {
+        amount: validatedData.amount * 100, // amount in smallest currency unit (paise)
+        currency: "INR",
+        receipt: `receipt_${Date.now()}`,
+      };
+
+      const razorpayOrder = await razorpay.orders.create(options);
+
+      // Store local order with pending status
+      const order = await storage.createOrder({
+        ...validatedData,
+        razorpayOrderId: razorpayOrder.id,
+        status: "pending"
+      });
+
+      res.status(201).json({
+        ...order,
+        razorpayOrderId: razorpayOrder.id,
+        keyId: process.env.RAZORPAY_KEY_ID // Send key_id to frontend
+      });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Invalid order data", details: error.errors });
       }
       console.error("Error creating order:", error);
       res.status(500).json({ error: "Failed to create order" });
+    }
+  });
+
+  app.post("/api/verify-payment", async (req, res) => {
+    try {
+      const {
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
+        orderId // Our local order ID
+      } = req.body;
+
+      if (!process.env.RAZORPAY_KEY_SECRET) {
+        throw new Error("Razorpay secret missing");
+      }
+
+      // Verify Signature
+      const body = razorpay_order_id + "|" + razorpay_payment_id;
+      const expectedSignature = crypto
+        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+        .update(body.toString())
+        .digest("hex");
+
+      if (expectedSignature === razorpay_signature) {
+        // Signature valid, update order
+        const updatedOrder = await storage.updateOrderStatus(
+          orderId,
+          "completed",
+          razorpay_payment_id,
+          razorpay_signature
+        );
+
+        if (updatedOrder) {
+          // Send Email to Admin
+          await sendEmailNotification(
+            "directtoakash@gmail.com",
+            `New Order Received: ${updatedOrder.templateId}`,
+            `
+            <h2>New Order Payment Successful</h2>
+            <p><strong>Order ID:</strong> ${updatedOrder.id}</p>
+            <p><strong>Customer:</strong> ${updatedOrder.customerName} (${updatedOrder.customerEmail})</p>
+            <p><strong>Template:</strong> ${updatedOrder.templateId}</p>
+            <p><strong>Amount:</strong> ₹${updatedOrder.amount}</p>
+            <p><strong>Payment ID:</strong> ${razorpay_payment_id}</p>
+            `
+          );
+
+          // Send Confirmation to User
+          await sendEmailNotification(
+            updatedOrder.customerEmail,
+            "Order Confirmation - PaidPortfolio",
+            `
+            <h2>Thank you for your purchase!</h2>
+            <p>Hi ${updatedOrder.customerName},</p>
+            <p>We have successfully received your payment for the template.</p>
+            <p><strong>Order ID:</strong> ${updatedOrder.id}</p>
+            <p><strong>Amount Paid:</strong> ₹${updatedOrder.amount}</p>
+            <br>
+            <p>You will receive a separate email with the download link/access details shortly.</p>
+            <br>
+            <p>Best regards,</p>
+            <p>The PaidPortfolio Team</p>
+            `
+          );
+        }
+
+        res.json({ success: true, order: updatedOrder });
+      } else {
+        res.status(400).json({ error: "Invalid signature" });
+      }
+    } catch (error) {
+      console.error("Error verifying payment:", error);
+      res.status(500).json({ error: "Failed to verify payment" });
     }
   });
 

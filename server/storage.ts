@@ -30,6 +30,7 @@ export interface IStorage {
   getOrder(id: string): Promise<Order | undefined>;
   getOrdersByUser(userId: string): Promise<Order[]>;
   createOrder(order: InsertOrder): Promise<Order>;
+  updateOrderStatus(id: string, status: string, paymentId?: string, signature?: string): Promise<Order | undefined>;
 
   // Custom Requests
   getCustomRequests(): Promise<CustomRequest[]>;
@@ -276,10 +277,29 @@ export class MemStorage implements IStorage {
       id,
       userId: insertOrder.userId || null,
       templateId: insertOrder.templateId || null,
-      status: insertOrder.status ?? "pending"
+      // @ts-ignore
+      razorpayOrderId: insertOrder.razorpayOrderId || null,
+      razorpayPaymentId: null,
+      razorpaySignature: null,
+      status: insertOrder.status ?? "pending",
+      createdAt: new Date(),
     };
     this.orders.set(id, order);
     return order;
+  }
+
+  async updateOrderStatus(id: string, status: string, paymentId?: string, signature?: string): Promise<Order | undefined> {
+    const order = this.orders.get(id);
+    if (!order) return undefined;
+
+    const updatedOrder = {
+      ...order,
+      status,
+      ...(paymentId && { razorpayPaymentId: paymentId }),
+      ...(signature && { razorpaySignature: signature })
+    };
+    this.orders.set(id, updatedOrder);
+    return updatedOrder;
   }
 
   // Custom Requests

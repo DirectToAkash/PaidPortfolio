@@ -1,22 +1,61 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Star, Search, Filter, ExternalLink, ShoppingCart } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Star, Search, Filter, ExternalLink, ShoppingCart, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { PortfolioTemplate } from "@shared/schema";
+import { useCurrency } from "@/hooks/use-currency";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import { useLocation } from "wouter";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 const categories = ["All", "Developer", "Designer", "Minimal", "Creative", "Modern", "Personal", "Professional", "Medical"];
 
-import { useCurrency } from "@/hooks/use-currency";
+const formSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+});
 
 export default function Templates() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const { formatPrice } = useCurrency();
+  const { toast } = useToast();
+  const [, setLocation] = useLocation();
+  const [selectedTemplate, setSelectedTemplate] = useState<PortfolioTemplate | null>(null);
+  const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+    },
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -32,6 +71,82 @@ export default function Templates() {
     const matchesCategory = selectedCategory === "All" || template.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const onBuyClick = (template: PortfolioTemplate) => {
+    setSelectedTemplate(template);
+    setIsBuyModalOpen(true);
+  };
+
+  const handlePurchase = async (values: z.infer<typeof formSchema>) => {
+    if (!selectedTemplate) return;
+
+    setIsProcessing(true);
+    try {
+      // 1. Create Order
+      const res = await apiRequest("POST", "/api/orders", {
+        amount: selectedTemplate.priceInr || 950,
+        templateId: selectedTemplate.name,
+        customerName: values.name,
+        customerEmail: values.email,
+        userId: "guest", // or actual user ID if auth implemented
+      });
+
+      const orderData = await res.json();
+
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: "INR",
+        name: "PaidPortfolio",
+        description: `Purchase ${selectedTemplate.name}`,
+        order_id: orderData.razorpayOrderId,
+        handler: async function (response: any) {
+          // Verify Payment
+          try {
+            const verifyRes = await apiRequest("POST", "/api/verify-payment", {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              orderId: orderData.id
+            });
+            const verifyData = await verifyRes.json();
+
+            if (verifyData.success) {
+              setIsBuyModalOpen(false);
+              setLocation("/success");
+            } else {
+              toast({ title: "Payment Verification Failed", description: "Please contact support.", variant: "destructive" });
+            }
+          } catch (e) {
+            toast({ title: "Payment Verification Error", description: "Please contact support.", variant: "destructive" });
+          } finally {
+            setIsProcessing(false);
+          }
+        },
+        prefill: {
+          name: values.name,
+          email: values.email,
+          contact: ""
+        },
+        theme: {
+          color: "#000000"
+        },
+        modal: {
+          ondismiss: function () {
+            setIsProcessing(false);
+          }
+        }
+      };
+
+      const rzp1 = new window.Razorpay(options);
+      rzp1.open();
+
+    } catch (error) {
+      console.error(error);
+      toast({ title: "Failed to initiate payment", description: "Please try again later.", variant: "destructive" });
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <>
@@ -161,6 +276,7 @@ export default function Templates() {
                             variant="outline"
                             className="border-white/20 text-white hover:bg-white/10"
                             data-testid={`button-preview-${template.id}`}
+                            onClick={() => window.open(template.demoUrl || "#", "_blank")}
                           >
                             <ExternalLink className="w-4 h-4 mr-1" />
                             Preview
@@ -169,6 +285,7 @@ export default function Templates() {
                             size="sm"
                             className="bg-white text-black hover:bg-white/90"
                             data-testid={`button-buy-${template.id}`}
+                            onClick={() => onBuyClick(template)}
                           >
                             <ShoppingCart className="w-4 h-4 mr-1" />
                             Buy Now
@@ -224,6 +341,58 @@ export default function Templates() {
           )}
         </div>
       </main>
+
+      <Dialog open={isBuyModalOpen} onOpenChange={setIsBuyModalOpen}>
+        <DialogContent className="sm:max-w-md bg-black/95 border-white/20 text-white">
+          <DialogHeader>
+            <DialogTitle>Complete Your Purchase</DialogTitle>
+            <DialogDescription className="text-white/60">
+              Enter your details to proceed with the payment for <strong>{selectedTemplate?.name}</strong>.
+            </DialogDescription>
+          </DialogHeader>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handlePurchase)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John Doe" {...field} className="bg-white/5 border-white/10 text-white" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email Address</FormLabel>
+                    <FormControl>
+                      <Input placeholder="john@example.com" type="email" {...field} className="bg-white/5 border-white/10 text-white" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full bg-white text-black hover:bg-white/90" disabled={isProcessing}>
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  `Pay ${formatPrice(selectedTemplate?.price || 0, selectedTemplate?.priceInr || 950)}`
+                )}
+              </Button>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </>

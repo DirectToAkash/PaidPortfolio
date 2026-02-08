@@ -17,6 +17,7 @@ import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
 import NotFound from "@/pages/not-found";
 import Book from "@/pages/book";
+import Success from "@/pages/success";
 import { useState } from "react";
 
 function Router() {
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/book" component={Book} />
+      <Route path="/success" component={Success} />
       <Route component={NotFound} />
     </Switch>
   );
