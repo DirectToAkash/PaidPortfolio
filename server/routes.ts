@@ -168,22 +168,22 @@ export async function registerRoutes(
           );
 
           // Send Confirmation to User
-          await sendEmailNotification(
-            updatedOrder.customerEmail,
-            "Order Confirmation - PaidPortfolio",
-            `
-            <h2>Thank you for your purchase!</h2>
-            <p>Hi ${updatedOrder.customerName},</p>
-            <p>We have successfully received your payment for the template.</p>
-            <p><strong>Order ID:</strong> ${updatedOrder.id}</p>
-            <p><strong>Amount Paid:</strong> ₹${updatedOrder.amount}</p>
-            <br>
-            <p>You will receive a separate email with the download link/access details shortly.</p>
-            <br>
-            <p>Best regards,</p>
-            <p>The PaidPortfolio Team</p>
-            `
-          );
+          // await sendEmailNotification(
+          //   updatedOrder.customerEmail,
+          //   "Order Confirmation - PaidPortfolio",
+          //   `
+          //   <h2>Thank you for your purchase!</h2>
+          //   <p>Hi ${updatedOrder.customerName},</p>
+          //   <p>We have successfully received your payment for the template.</p>
+          //   <p><strong>Order ID:</strong> ${updatedOrder.id}</p>
+          //   <p><strong>Amount Paid:</strong> ₹${updatedOrder.amount}</p>
+          //   <br>
+          //   <p>You will receive a separate email with the download link/access details shortly.</p>
+          //   <br>
+          //   <p>Best regards,</p>
+          //   <p>The PaidPortfolio Team</p>
+          //   `
+          // );
         }
 
         res.json({ success: true, order: updatedOrder });

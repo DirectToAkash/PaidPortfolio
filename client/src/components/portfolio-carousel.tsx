@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ExternalLink, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useCurrency } from "@/hooks/use-currency";
 
 const portfolioItems = [
   {
@@ -10,6 +11,7 @@ const portfolioItems = [
     name: "Creative Studio",
     category: "Designer",
     price: 10,
+    priceInr: 950,
     image: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&h=500&fit=crop",
     rating: 5,
   },
@@ -18,6 +20,7 @@ const portfolioItems = [
     name: "Open Book Portfolio",
     category: "Personal",
     price: 10,
+    priceInr: 950,
     image: "/portfolio-creative.png",
     rating: 5,
     link: "https://directtoakash.github.io/NewPortfolio/",
@@ -27,6 +30,7 @@ const portfolioItems = [
     name: "Advocate Portfolio",
     category: "Professional",
     price: 10,
+    priceInr: 950,
     image: "/portfolio-advocate.png",
     rating: 5,
     link: "https://advocateportfolio.lovable.app/",
@@ -36,18 +40,30 @@ const portfolioItems = [
     name: "Dentist Portfolio",
     category: "Medical",
     price: 10,
+    priceInr: 950,
     image: "/portfolio-dentist.png",
     rating: 5,
     link: "https://dentistportfolio.lovable.app/",
   },
   {
     id: 5,
-    name: "Student Portfolio",
-    category: "Student",
+    name: "Developer Portfolio",
+    category: "Developer",
     price: 10,
-    image: "/portfolio-aman.png",
+    priceInr: 950,
+    image: "/portfolio-razaq.png",
     rating: 5,
-    link: "https://aman-yadav.vercel.app/",
+    link: "https://razaq.vercel.app/",
+  },
+  {
+    id: 6,
+    name: "Designer Template",
+    category: "Designer",
+    price: 10,
+    priceInr: 1999,
+    image: "/portfolio-nizarali.png",
+    rating: 5,
+    link: "https://nizarali.framer.website/",
   },
 ];
 
@@ -55,6 +71,7 @@ export function PortfolioCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const isMobile = useIsMobile();
+  const { formatPrice } = useCurrency();
 
   // Touch handling state
   const touchStartX = useRef<number | null>(null);
@@ -277,7 +294,9 @@ export function PortfolioCarousel() {
                         </div>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-2xl font-bold text-white">${item.price}</span>
+                        <span className="text-2xl font-bold text-white">
+                          {formatPrice(item.price, item.priceInr)}
+                        </span>
                         {item.link ? (
                           <a href={item.link} target="_blank" rel="noopener noreferrer">
                             <Button
