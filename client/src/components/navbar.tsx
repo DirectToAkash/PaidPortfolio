@@ -75,13 +75,7 @@ export function Navbar({ showSplash = false }: { showSplash?: boolean }) {
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <Button
-              variant="ghost"
-              className="text-white/70 hover:text-white hover:bg-white/5"
-              data-testid="button-login"
-            >
-              Login
-            </Button>
+
             <Button
               className="bg-white text-black hover:bg-white/90 glow-sm"
               data-testid="button-get-started"
@@ -133,9 +127,7 @@ export function Navbar({ showSplash = false }: { showSplash?: boolean }) {
                 </Link>
               ))}
               <div className="pt-4 flex flex-col gap-2">
-                <Button variant="ghost" className="w-full text-white/70">
-                  Login
-                </Button>
+
                 <Button className="w-full bg-white text-black">
                   Get Started
                 </Button>

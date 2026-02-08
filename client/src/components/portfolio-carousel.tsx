@@ -4,68 +4,8 @@ import { ChevronLeft, ChevronRight, ExternalLink, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useCurrency } from "@/hooks/use-currency";
-
-const portfolioItems = [
-  {
-    id: 1,
-    name: "Creative Studio",
-    category: "Designer",
-    price: 10,
-    priceInr: 950,
-    image: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&h=500&fit=crop",
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: "Open Book Portfolio",
-    category: "Personal",
-    price: 10,
-    priceInr: 950,
-    image: "/portfolio-creative.png",
-    rating: 5,
-    link: "https://directtoakash.github.io/NewPortfolio/",
-  },
-  {
-    id: 3,
-    name: "Advocate Portfolio",
-    category: "Professional",
-    price: 10,
-    priceInr: 950,
-    image: "/portfolio-advocate.png",
-    rating: 5,
-    link: "https://advocateportfolio.lovable.app/",
-  },
-  {
-    id: 4,
-    name: "Dentist Portfolio",
-    category: "Medical",
-    price: 10,
-    priceInr: 950,
-    image: "/portfolio-dentist.png",
-    rating: 5,
-    link: "https://dentistportfolio.lovable.app/",
-  },
-  {
-    id: 5,
-    name: "Developer Portfolio",
-    category: "Developer",
-    price: 10,
-    priceInr: 950,
-    image: "/portfolio-razaq.png",
-    rating: 5,
-    link: "https://razaq.vercel.app/",
-  },
-  {
-    id: 6,
-    name: "Designer Template",
-    category: "Designer",
-    price: 10,
-    priceInr: 1999,
-    image: "/portfolio-nizarali.png",
-    rating: 5,
-    link: "https://nizarali.framer.website/",
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import type { PortfolioTemplate } from "@shared/schema";
 
 export function PortfolioCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -73,17 +13,24 @@ export function PortfolioCarousel() {
   const isMobile = useIsMobile();
   const { formatPrice } = useCurrency();
 
+  // Fetch templates from API
+  const { data: templates = [], isLoading } = useQuery<PortfolioTemplate[]>({
+    queryKey: ["/api/templates"],
+  });
+
   // Touch handling state
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
 
   const nextSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % portfolioItems.length);
-  }, []);
+    if (templates.length === 0) return;
+    setCurrentIndex((prev) => (prev + 1) % templates.length);
+  }, [templates.length]);
 
   const prevSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + portfolioItems.length) % portfolioItems.length);
-  }, []);
+    if (templates.length === 0) return;
+    setCurrentIndex((prev) => (prev - 1 + templates.length) % templates.length);
+  }, [templates.length]);
 
   // Handle touch events
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -123,10 +70,12 @@ export function PortfolioCarousel() {
   }, [isPaused, nextSlide]);
 
   const getCardStyle = (index: number) => {
+    if (templates.length === 0) return {};
+
     const diff = index - currentIndex;
-    const normalizedDiff = ((diff + portfolioItems.length) % portfolioItems.length);
-    const adjustedDiff = normalizedDiff > portfolioItems.length / 2
-      ? normalizedDiff - portfolioItems.length
+    const normalizedDiff = ((diff + templates.length) % templates.length);
+    const adjustedDiff = normalizedDiff > templates.length / 2
+      ? normalizedDiff - templates.length
       : normalizedDiff;
 
     // Mobile-specific adjustments (stacked cards/simpler view) or just adjusted scaling/position
@@ -139,7 +88,7 @@ export function PortfolioCarousel() {
           z: 100,
           opacity: 1,
         };
-      } else if (adjustedDiff === 1 || adjustedDiff === -1 * (portfolioItems.length - 1)) {
+      } else if (adjustedDiff === 1 || adjustedDiff === -1 * (templates.length - 1)) {
         return {
           x: 100, // Reduced translation
           scale: 0.9,
@@ -147,7 +96,7 @@ export function PortfolioCarousel() {
           z: 50,
           opacity: 0.5,
         };
-      } else if (adjustedDiff === -1 || adjustedDiff === portfolioItems.length - 1) {
+      } else if (adjustedDiff === -1 || adjustedDiff === templates.length - 1) {
         return {
           x: -100, // Reduced translation
           scale: 0.9,
@@ -175,7 +124,7 @@ export function PortfolioCarousel() {
         z: 100,
         opacity: 1,
       };
-    } else if (adjustedDiff === 1 || adjustedDiff === -1 * (portfolioItems.length - 1)) {
+    } else if (adjustedDiff === 1 || adjustedDiff === -1 * (templates.length - 1)) {
       return {
         x: 320,
         scale: 0.85,
@@ -183,7 +132,7 @@ export function PortfolioCarousel() {
         z: 50,
         opacity: 0.7,
       };
-    } else if (adjustedDiff === -1 || adjustedDiff === portfolioItems.length - 1) {
+    } else if (adjustedDiff === -1 || adjustedDiff === templates.length - 1) {
       return {
         x: -320,
         scale: 0.85,
@@ -191,7 +140,7 @@ export function PortfolioCarousel() {
         z: 50,
         opacity: 0.7,
       };
-    } else if (adjustedDiff === 2 || adjustedDiff === -1 * (portfolioItems.length - 2)) {
+    } else if (adjustedDiff === 2 || adjustedDiff === -1 * (templates.length - 2)) {
       return {
         x: 550,
         scale: 0.7,
@@ -199,7 +148,7 @@ export function PortfolioCarousel() {
         z: 0,
         opacity: 0.4,
       };
-    } else if (adjustedDiff === -2 || adjustedDiff === portfolioItems.length - 2) {
+    } else if (adjustedDiff === -2 || adjustedDiff === templates.length - 2) {
       return {
         x: -550,
         scale: 0.7,
@@ -216,6 +165,15 @@ export function PortfolioCarousel() {
       opacity: 0,
     };
   };
+
+  if (isLoading) {
+    return (
+      <section className="relative py-24 overflow-hidden min-h-[600px] flex items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-[#0a0a0a] to-black" />
+        <div className="relative z-10 text-white/50">Loading templates...</div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative py-24 overflow-hidden">
@@ -248,7 +206,7 @@ export function PortfolioCarousel() {
           style={{ perspective: "1000px" }}
         >
           <div className="absolute inset-0 flex items-center justify-center">
-            {portfolioItems.map((item, index) => {
+            {templates.map((item, index) => {
               const style = getCardStyle(index);
               return (
                 <motion.div
@@ -258,7 +216,7 @@ export function PortfolioCarousel() {
                     x: style.x,
                     scale: style.scale,
                     rotateY: style.rotateY,
-                    zIndex: Math.round(style.z),
+                    zIndex: Math.round(style.z as number),
                     opacity: style.opacity,
                   }}
                   transition={{ duration: 0.6, ease: "easeOut" }}
@@ -272,7 +230,7 @@ export function PortfolioCarousel() {
                   >
                     <div className="relative h-48 sm:h-56 overflow-hidden">
                       <img
-                        src={item.image}
+                        src={item.previewImage}
                         alt={item.name}
                         className="w-full h-full object-cover"
                         loading="lazy"
@@ -288,17 +246,17 @@ export function PortfolioCarousel() {
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-lg font-semibold text-white">{item.name}</h3>
                         <div className="flex items-center gap-1">
-                          {[...Array(item.rating)].map((_, i) => (
+                          {[...Array(item.rating || 0)].map((_, i) => (
                             <Star key={i} className="w-3 h-3 fill-white text-white" />
                           ))}
                         </div>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-2xl font-bold text-white">
-                          {formatPrice(item.price, item.priceInr)}
+                          {formatPrice(item.price, item.priceInr || 950)}
                         </span>
-                        {item.link ? (
-                          <a href={item.link} target="_blank" rel="noopener noreferrer">
+                        {item.demoUrl ? (
+                          <a href={item.demoUrl} target="_blank" rel="noopener noreferrer">
                             <Button
                               size="sm"
                               className="bg-white text-black hover:bg-white/90"
@@ -342,7 +300,7 @@ export function PortfolioCarousel() {
         </div>
 
         <div className="flex items-center justify-center gap-2 mt-8">
-          {portfolioItems.map((_, index) => (
+          {templates.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}

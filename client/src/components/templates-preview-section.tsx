@@ -3,77 +3,15 @@ import { ArrowRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useCurrency } from "@/hooks/use-currency";
-
-const templates = [
-  {
-    id: 1,
-    name: "Creative Studio",
-    category: "Designer",
-    price: 10,
-    priceInr: 950,
-    image: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=400&h=300&fit=crop",
-    rating: 5,
-    reviews: 98,
-  },
-  {
-    id: 2,
-    name: "Open Book Portfolio",
-    category: "Personal",
-    price: 10,
-    priceInr: 950,
-    image: "/portfolio-creative.png",
-    rating: 5,
-    reviews: 42,
-    link: "https://directtoakash.github.io/NewPortfolio/",
-  },
-  {
-    id: 3,
-    name: "Advocate Portfolio",
-    category: "Professional",
-    price: 10,
-    priceInr: 950,
-    image: "/portfolio-advocate.png",
-    rating: 5,
-    reviews: 15,
-    link: "https://advocateportfolio.lovable.app/",
-  },
-  {
-    id: 4,
-    name: "Dentist Portfolio",
-    category: "Medical",
-    price: 10,
-    priceInr: 950,
-    image: "/portfolio-dentist.png",
-    rating: 5,
-    reviews: 12,
-    link: "https://dentistportfolio.lovable.app/",
-  },
-  {
-    id: 6,
-    name: "Developer Portfolio",
-    category: "Developer",
-    price: 10,
-    priceInr: 950,
-    image: "/portfolio-razaq.png",
-    rating: 5,
-    reviews: 18,
-    link: "http://razaq.vercel.app/",
-  },
-  {
-    id: 7,
-    name: "Designer Template",
-    category: "Designer",
-    price: 10,
-    priceInr: 1999,
-    image: "/portfolio-nizarali.png",
-    rating: 5,
-    reviews: 12,
-    link: "https://nizarali.framer.website/",
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import type { PortfolioTemplate } from "@shared/schema";
 
 export function TemplatesPreviewSection() {
   const { formatPrice } = useCurrency();
+
+  const { data: templates = [] } = useQuery<PortfolioTemplate[]>({
+    queryKey: ["/api/templates"],
+  });
 
   return (
     <section className="relative py-24 overflow-hidden">
@@ -108,7 +46,7 @@ export function TemplatesPreviewSection() {
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {templates.map((template, index) => (
+          {templates.slice(0, 6).map((template, index) => (
             <motion.div
               key={template.id}
               initial={{ opacity: 0, y: 30 }}
@@ -120,7 +58,7 @@ export function TemplatesPreviewSection() {
               <div className="glass rounded-xl overflow-hidden hover:glow transition-all duration-300">
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={template.image}
+                    src={template.previewImage}
                     alt={template.name}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     loading="lazy"
@@ -132,8 +70,8 @@ export function TemplatesPreviewSection() {
                     </span>
                   </div>
                   <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {template.link ? (
-                      <a href={template.link} target="_blank" rel="noopener noreferrer">
+                    {template.demoUrl ? (
+                      <a href={template.demoUrl} target="_blank" rel="noopener noreferrer">
                         <Button
                           size="sm"
                           className="bg-white text-black hover:bg-white/90"
@@ -158,7 +96,7 @@ export function TemplatesPreviewSection() {
                       {template.name}
                     </h3>
                     <span className="text-xl font-bold text-white">
-                      {formatPrice(template.price, template.priceInr)}
+                      {formatPrice(template.price, template.priceInr || 950)}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-white/60">
@@ -166,12 +104,12 @@ export function TemplatesPreviewSection() {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`w-3 h-3 ${i < template.rating ? "fill-white text-white" : "text-white/30"
+                          className={`w-3 h-3 ${i < (template.rating || 0) ? "fill-white text-white" : "text-white/30"
                             }`}
                         />
                       ))}
                     </div>
-                    <span className="text-sm">({template.reviews} reviews)</span>
+                    <span className="text-sm">({template.reviewCount || 0} reviews)</span>
                   </div>
                 </div>
               </div>
