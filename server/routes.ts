@@ -5,13 +5,13 @@ import { insertCustomRequestSchema, insertContactSchema, insertOrderSchema } fro
 import { z } from "zod";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY || "re_123");
-
 async function sendEmailNotification(to: string, subject: string, html: string) {
   if (!process.env.RESEND_API_KEY) {
     console.warn("Resend API key not found. Skipping email notification.");
     return false;
   }
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
   try {
     const response = await resend.emails.send({
