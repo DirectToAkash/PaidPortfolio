@@ -128,6 +128,25 @@ export async function registerRoutes(
         `
       );
 
+      // Send confirmation email to User
+      const clientConfirmationSuccess = await sendEmailNotification(
+        request.email,
+        "We received your request! - PaidPortfolio",
+        `
+        <h2>We received your custom portfolio request!</h2>
+        <p>Hi ${request.name},</p>
+        <p>Thanks for reaching out. We have received your request for a custom portfolio and will review it shortly.</p>
+        <h3>Your Project Request:</h3>
+        <p><strong>Budget:</strong> ${request.budget}</p>
+        <p><strong>Timeline:</strong> ${request.timeline}</p>
+        <p><strong>Description:</strong></p>
+        <div style="white-space: pre-wrap; font-family: sans-serif; background: #f5f5f5; padding: 10px; border-radius: 5px; color: #333;">${request.description}</div>
+        <br>
+        <p>Best regards,</p>
+        <p>The PaidPortfolio Team</p>
+        `
+      );
+
       res.status(201).json({ ...request, emailSent: success });
     } catch (error) {
       if (error instanceof z.ZodError) {
