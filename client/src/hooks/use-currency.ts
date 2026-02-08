@@ -9,32 +9,17 @@ interface UseCurrencyReturn {
 }
 
 export function useCurrency(): UseCurrencyReturn {
-    const [currency, setCurrency] = useState<Currency>("USD");
-    const [symbol, setSymbol] = useState("$");
+    const [currency, setCurrency] = useState<Currency>("INR");
+    const [symbol, setSymbol] = useState("₹");
 
+    // Removed specific timezone detection to enforce INR as requested
     useEffect(() => {
-        try {
-            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            if (timeZone === "Asia/Kolkata" || timeZone === "IST") {
-                setCurrency("INR");
-                setSymbol("₹");
-            } else {
-                setCurrency("USD");
-                setSymbol("$");
-            }
-        } catch (e) {
-            console.error("Failed to detect timezone", e);
-            // Default to USD
-            setCurrency("USD");
-            setSymbol("$");
-        }
+        setCurrency("INR");
+        setSymbol("₹");
     }, []);
 
     const formatPrice = (priceUsd: number, priceInr: number) => {
-        if (currency === "INR") {
-            return `${symbol}${priceInr}`;
-        }
-        return `${symbol}${priceUsd}`;
+        return `${symbol}${priceInr}`;
     };
 
     return { currency, symbol, formatPrice };
