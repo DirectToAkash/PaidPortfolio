@@ -40,6 +40,15 @@ const portfolioItems = [
     rating: 5,
     link: "https://dentistportfolio.lovable.app/",
   },
+  {
+    id: 5,
+    name: "Student Portfolio",
+    category: "Student",
+    price: 10,
+    image: "/portfolio-aman.png",
+    rating: 5,
+    link: "https://aman-yadav.vercel.app/",
+  },
 ];
 
 export function PortfolioCarousel() {

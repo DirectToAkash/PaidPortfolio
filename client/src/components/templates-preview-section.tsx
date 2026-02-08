@@ -48,6 +48,17 @@ const templates = [
     reviews: 12,
     link: "https://dentistportfolio.lovable.app/",
   },
+  {
+    id: 5,
+    name: "Student Portfolio",
+    category: "Student",
+    price: 10,
+    priceInr: 950,
+    image: "/portfolio-aman.png",
+    rating: 5,
+    reviews: 23,
+    link: "https://aman-yadav.vercel.app/",
+  },
 ];
 
 export function TemplatesPreviewSection() {

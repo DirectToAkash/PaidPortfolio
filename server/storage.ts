@@ -151,6 +151,20 @@ export class MemStorage implements IStorage {
         rating: 5,
         reviewCount: 12,
       },
+      {
+        name: "Student Portfolio",
+        description: "Expert full stack developer portfolio. Showcases React & Next.js expertise with a dark, modern aesthetic.",
+        price: 10,
+        priceInr: 950,
+        category: "Student",
+        previewImage: "/portfolio-aman.png",
+        features: ["Dark Mode", "Project Gallery", "Tech Stack Showcase", "Resume Download"],
+        techStack: ["React", "Next.js", "TypeScript", "MongoDB"],
+        demoUrl: "https://aman-yadav.vercel.app/",
+        isFeatured: true,
+        rating: 5,
+        reviewCount: 23,
+      },
     ];
 
     templateData.forEach((template) => {
