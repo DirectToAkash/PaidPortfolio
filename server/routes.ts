@@ -111,8 +111,8 @@ export async function registerRoutes(
       const validatedData = insertCustomRequestSchema.parse(req.body);
       const request = await storage.createCustomRequest(validatedData);
 
-      // Send notification email
-      const success = await sendEmailNotification(
+      // Send notification email to Admin
+      const adminSuccess = await sendEmailNotification(
         "directtoakash@gmail.com",
         "New Custom Portfolio Request",
         `
@@ -129,7 +129,7 @@ export async function registerRoutes(
       );
 
       // Send confirmation email to User
-      const clientConfirmationSuccess = await sendEmailNotification(
+      const clientSuccess = await sendEmailNotification(
         request.email,
         "We received your request! - PaidPortfolio",
         `
@@ -147,7 +147,14 @@ export async function registerRoutes(
         `
       );
 
-      res.status(201).json({ ...request, emailSent: success });
+      // If client email fails but admin succeeds, log it but don't error out the user
+      if (adminSuccess && !clientSuccess) {
+        console.warn(`[Sandbox Restriction] Admin received custom request from ${request.email}, but client confirmation failed.`);
+      }
+
+      // We consider the operation a success if the ADMIN received the email.
+      // The user confirmation is secondary.
+      res.status(201).json({ ...request, emailSent: adminSuccess });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Invalid request data", details: error.errors });
@@ -174,7 +181,7 @@ export async function registerRoutes(
       const message = await storage.createContactMessage(validatedData);
 
       // Send notification email to Admin
-      await sendEmailNotification(
+      const adminSuccess = await sendEmailNotification(
         "directtoakash@gmail.com",
         `New Contact/Booking: ${message.subject}`,
         `
@@ -188,7 +195,7 @@ export async function registerRoutes(
       );
 
       // Send confirmation email to User
-      const success = await sendEmailNotification(
+      const clientSuccess = await sendEmailNotification(
         message.email,
         "Booking Confirmation - PaidPortfolio",
         `
@@ -203,7 +210,13 @@ export async function registerRoutes(
         `
       );
 
-      res.status(201).json({ ...message, emailSent: success });
+      // If client email fails but admin succeeds, log it but don't error out the user
+      if (adminSuccess && !clientSuccess) {
+        console.warn(`[Sandbox Restriction] Admin received contact/booking from ${message.email}, but client confirmation failed.`);
+      }
+
+      // Prioritize Admin success for the UI response
+      res.status(201).json({ ...message, emailSent: adminSuccess });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Invalid contact data", details: error.errors });
