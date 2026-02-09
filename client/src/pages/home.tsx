@@ -10,6 +10,7 @@ import { FeaturesSection } from "@/components/features-section";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { PricingSection } from "@/components/pricing-section";
 import { CTASection } from "@/components/cta-section";
+import SeoContent from "@/components/SeoContent";
 
 export default function Home() {
   useEffect(() => {
@@ -19,15 +20,9 @@ export default function Home() {
   return (
     <>
       <Helmet>
-        <title>PaidPortfolio - Premium Portfolio Websites for Students & Developers</title>
-        <meta
-          name="description"
-          content="Buy stunning portfolio website templates or get a fully custom portfolio built. Perfect for students, developers, and creators looking to land their dream job."
-        />
-        <meta
-          name="keywords"
-          content="portfolio website for students, developer portfolio website, buy portfolio website, custom portfolio website service, personal portfolio for job"
-        />
+        <title>Portfolio Website Templates & Portfolio Design Services | PaidPortfolio</title>
+        <meta name="description" content="Buy modern portfolio website templates or get a custom portfolio design. Perfect for students, developers, freelancers, Professionals, and job seekers." />
+        <meta name="keywords" content="portfolio website templates, portfolio design, developer portfolio website, student portfolio website, buy portfolio website, free portfolio templates, premium and luxury portfolio design" />
         <meta property="og:title" content="PaidPortfolio - Premium Portfolio Websites" />
         <meta
           property="og:description"
@@ -39,6 +34,7 @@ export default function Home() {
 
       <main>
         <HeroSection />
+        <SeoContent /> 
         <PortfolioCarousel />
         <WhyPortfolioSection />
         <TemplatesPreviewSection />
