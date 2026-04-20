@@ -11,9 +11,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Star, Search, Filter, ExternalLink, ShoppingCart, Loader2 } from "lucide-react";
+import { Star, Search, Filter, ExternalLink, ShoppingCart, Loader2, Sparkles } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { PortfolioTemplate } from "@shared/schema";
@@ -32,11 +31,17 @@ declare global {
   }
 }
 
-const categories = ["All", "Developer", "Designer", "Minimal", "Creative", "Modern", "Personal", "Professional", "Medical"];
+const categories = ["All", "Developer", "Designer", "Minimal", "Creative", "Modern", "Personal", "Professional", "Medical", "Custom"];
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
+});
+
+const customFormSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  amount: z.coerce.number().min(1, "Amount must be at least ₹1"),
 });
 
 export default function Templates() {
@@ -47,6 +52,7 @@ export default function Templates() {
   const [, setLocation] = useLocation();
   const [selectedTemplate, setSelectedTemplate] = useState<PortfolioTemplate | null>(null);
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
+  const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,6 +60,15 @@ export default function Templates() {
     defaultValues: {
       name: "",
       email: "",
+    },
+  });
+
+  const customForm = useForm<z.infer<typeof customFormSchema>>({
+    resolver: zodResolver(customFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      amount: undefined,
     },
   });
 
@@ -72,75 +87,88 @@ export default function Templates() {
     return matchesSearch && matchesCategory;
   });
 
+  const isCustomTemplate = (template: PortfolioTemplate) => template.name === "Custom Portfolio";
+
   const onBuyClick = (template: PortfolioTemplate) => {
-    setSelectedTemplate(template);
-    setIsBuyModalOpen(true);
+    if (isCustomTemplate(template)) {
+      customForm.reset();
+      setIsCustomModalOpen(true);
+    } else {
+      setSelectedTemplate(template);
+      setIsBuyModalOpen(true);
+    }
+  };
+
+  const initiateRazorpay = (orderData: any, description: string, prefillName: string, prefillEmail: string) => {
+    const options = {
+      key: orderData.keyId,
+      amount: orderData.amount,
+      currency: "INR",
+      name: "PaidPortfolio",
+      description,
+      order_id: orderData.razorpayOrderId,
+      handler: async function (response: any) {
+        try {
+          const verifyRes = await apiRequest("POST", "/api/verify-payment", {
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            orderId: orderData.id,
+          });
+          const verifyData = await verifyRes.json();
+          if (verifyData.success) {
+            setIsBuyModalOpen(false);
+            setIsCustomModalOpen(false);
+            setLocation("/success");
+          } else {
+            toast({ title: "Payment Verification Failed", description: "Please contact support.", variant: "destructive" });
+          }
+        } catch (e) {
+          toast({ title: "Payment Verification Error", description: "Please contact support.", variant: "destructive" });
+        } finally {
+          setIsProcessing(false);
+        }
+      },
+      prefill: { name: prefillName, email: prefillEmail, contact: "" },
+      theme: { color: "#000000" },
+      modal: { ondismiss: () => setIsProcessing(false) },
+    };
+    const rzp1 = new window.Razorpay(options);
+    rzp1.open();
   };
 
   const handlePurchase = async (values: z.infer<typeof formSchema>) => {
     if (!selectedTemplate) return;
-
     setIsProcessing(true);
     try {
-      // 1. Create Order
       const res = await apiRequest("POST", "/api/orders", {
         amount: selectedTemplate.priceInr || 950,
         templateId: selectedTemplate.name,
         customerName: values.name,
         customerEmail: values.email,
-        userId: "guest", // or actual user ID if auth implemented
+        userId: "guest",
       });
-
       const orderData = await res.json();
+      initiateRazorpay(orderData, `Purchase ${selectedTemplate.name}`, values.name, values.email);
+    } catch (error) {
+      console.error(error);
+      toast({ title: "Failed to initiate payment", description: "Please try again later.", variant: "destructive" });
+      setIsProcessing(false);
+    }
+  };
 
-      const options = {
-        key: orderData.keyId,
-        amount: orderData.amount,
-        currency: "INR",
-        name: "PaidPortfolio",
-        description: `Purchase ${selectedTemplate.name}`,
-        order_id: orderData.razorpayOrderId,
-        handler: async function (response: any) {
-          // Verify Payment
-          try {
-            const verifyRes = await apiRequest("POST", "/api/verify-payment", {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              orderId: orderData.id
-            });
-            const verifyData = await verifyRes.json();
-
-            if (verifyData.success) {
-              setIsBuyModalOpen(false);
-              setLocation("/success");
-            } else {
-              toast({ title: "Payment Verification Failed", description: "Please contact support.", variant: "destructive" });
-            }
-          } catch (e) {
-            toast({ title: "Payment Verification Error", description: "Please contact support.", variant: "destructive" });
-          } finally {
-            setIsProcessing(false);
-          }
-        },
-        prefill: {
-          name: values.name,
-          email: values.email,
-          contact: ""
-        },
-        theme: {
-          color: "#000000"
-        },
-        modal: {
-          ondismiss: function () {
-            setIsProcessing(false);
-          }
-        }
-      };
-
-      const rzp1 = new window.Razorpay(options);
-      rzp1.open();
-
+  const handleCustomPurchase = async (values: z.infer<typeof customFormSchema>) => {
+    setIsProcessing(true);
+    try {
+      const res = await apiRequest("POST", "/api/orders", {
+        amount: values.amount,
+        templateId: "Custom Portfolio",
+        customerName: values.name,
+        customerEmail: values.email,
+        userId: "guest",
+      });
+      const orderData = await res.json();
+      initiateRazorpay(orderData, "Custom Portfolio – Pay Your Price", values.name, values.email);
     } catch (error) {
       console.error(error);
       toast({ title: "Failed to initiate payment", description: "Please try again later.", variant: "destructive" });
@@ -174,7 +202,7 @@ export default function Templates() {
             className="text-center mb-12"
           >
             <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-              Portfolio<span className="text-glow"> Templates</span>
+              Portfolio<span className="text-glow">Templates</span>
               <span className="hidden">v2.1</span>
             </h1>
             <p className="text-white/60 max-w-2xl mx-auto">
@@ -240,97 +268,119 @@ export default function Templates() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredTemplates?.map((template, index) => (
-                <motion.div
-                  key={template.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                  className="group"
-                >
-                  <div className="glass rounded-xl overflow-hidden hover:glow transition-all duration-300">
-                    <div className="relative h-48 overflow-hidden">
-                      <img
-                        src={template.previewImage}
-                        alt={template.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                      <div className="absolute top-3 left-3">
-                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-white/10 backdrop-blur-sm text-white border border-white/20">
-                          {template.category}
-                        </span>
-                      </div>
-                      {template.isFeatured && (
-                        <div className="absolute top-3 right-3">
-                          <span className="px-3 py-1 rounded-full text-xs font-medium bg-white text-black">
-                            Featured
+              {filteredTemplates?.map((template, index) => {
+                const isCustom = isCustomTemplate(template);
+                return (
+                  <motion.div
+                    key={template.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                    className="group"
+                  >
+                    <div className={`glass rounded-xl overflow-hidden hover:glow transition-all duration-300 ${isCustom ? "ring-1 ring-white/30" : ""}`}>
+                      <div className="relative h-48 overflow-hidden">
+                        <img
+                          src={template.previewImage}
+                          alt={template.name}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                        <div className="absolute top-3 left-3">
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm text-white border ${isCustom ? "bg-white/20 border-white/40" : "bg-white/10 border-white/20"}`}>
+                            {isCustom ? "✦ Custom" : template.category}
                           </span>
                         </div>
-                      )}
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                        <div className="flex gap-2">
+                        {template.isFeatured && !isCustom && (
+                          <div className="absolute top-3 right-3">
+                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-white text-black">
+                              Featured
+                            </span>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
+                          <div className="flex gap-2">
+                            {!isCustom && template.demoUrl && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-white/20 text-white hover:bg-white/10"
+                                data-testid={`button-preview-${template.id}`}
+                                onClick={() => window.open(template.demoUrl || "#", "_blank")}
+                              >
+                                <ExternalLink className="w-4 h-4 mr-1" />
+                                Preview
+                              </Button>
+                            )}
+                            <Button
+                              size="sm"
+                              className="bg-white text-black hover:bg-white/90"
+                              data-testid={`button-buy-${template.id}`}
+                              onClick={() => onBuyClick(template)}
+                            >
+                              {isCustom ? (
+                                <>
+                                  <Sparkles className="w-4 h-4 mr-1" />
+                                  Choose Amount
+                                </>
+                              ) : (
+                                <>
+                                  <ShoppingCart className="w-4 h-4 mr-1" />
+                                  Buy Now
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-5">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="text-lg font-semibold text-white">{template.name}</h3>
+                          <span className="text-xl font-bold text-white">
+                            {isCustom ? "Pay Your Price" : formatPrice(template.price, template.priceInr || 950)}
+                          </span>
+                        </div>
+                        <p className="text-sm text-white/50 mb-3 line-clamp-2">{template.description}</p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-3 h-3 ${i < (template.rating || 5) ? "fill-white text-white" : "text-white/30"}`}
+                              />
+                            ))}
+                            <span className="text-xs text-white/50 ml-1">
+                              ({template.reviewCount || 0})
+                            </span>
+                          </div>
+                          {template.techStack && (
+                            <div className="flex gap-1">
+                              {template.techStack.slice(0, 3).map((tech, i) => (
+                                <span
+                                  key={i}
+                                  className="text-xs px-2 py-0.5 rounded bg-white/5 text-white/50"
+                                >
+                                  {tech}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        {isCustom && (
                           <Button
-                            size="sm"
-                            variant="outline"
-                            className="border-white/20 text-white hover:bg-white/10"
-                            data-testid={`button-preview-${template.id}`}
-                            onClick={() => window.open(template.demoUrl || "#", "_blank")}
-                          >
-                            <ExternalLink className="w-4 h-4 mr-1" />
-                            Preview
-                          </Button>
-                          <Button
-                            size="sm"
-                            className="bg-white text-black hover:bg-white/90"
-                            data-testid={`button-buy-${template.id}`}
+                            className="w-full mt-4 bg-white text-black hover:bg-white/90"
                             onClick={() => onBuyClick(template)}
                           >
-                            <ShoppingCart className="w-4 h-4 mr-1" />
-                            Buy Now
+                            <Sparkles className="w-4 h-4 mr-2" />
+                            Choose Your Amount
                           </Button>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-5">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-lg font-semibold text-white">{template.name}</h3>
-                        <span className="text-xl font-bold text-white">
-                          {formatPrice(template.price, template.priceInr || 950)}
-                        </span>
-                      </div>
-                      <p className="text-sm text-white/50 mb-3 line-clamp-2">{template.description}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-3 h-3 ${i < (template.rating || 5) ? "fill-white text-white" : "text-white/30"
-                                }`}
-                            />
-                          ))}
-                          <span className="text-xs text-white/50 ml-1">
-                            ({template.reviewCount || 0})
-                          </span>
-                        </div>
-                        {template.techStack && (
-                          <div className="flex gap-1">
-                            {template.techStack.slice(0, 3).map((tech, i) => (
-                              <span
-                                key={i}
-                                className="text-xs px-2 py-0.5 rounded bg-white/5 text-white/50"
-                              >
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
                         )}
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </div>
           )}
 
@@ -342,6 +392,7 @@ export default function Templates() {
         </div>
       </main>
 
+      {/* Standard Buy Modal */}
       <Dialog open={isBuyModalOpen} onOpenChange={setIsBuyModalOpen}>
         <DialogContent className="sm:max-w-md bg-black/95 border-white/20 text-white">
           <DialogHeader>
@@ -387,6 +438,87 @@ export default function Templates() {
                   </>
                 ) : (
                   `Pay ${formatPrice(selectedTemplate?.price || 0, selectedTemplate?.priceInr || 950)}`
+                )}
+              </Button>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Custom Portfolio – Pay Your Own Amount Modal */}
+      <Dialog open={isCustomModalOpen} onOpenChange={setIsCustomModalOpen}>
+        <DialogContent className="sm:max-w-md bg-black/95 border-white/20 text-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5" />
+              Custom Portfolio – Name Your Price
+            </DialogTitle>
+            <DialogDescription className="text-white/60">
+              Enter your details and the amount you'd like to pay. We'll reach out after payment to start building your custom portfolio.
+            </DialogDescription>
+          </DialogHeader>
+
+          <Form {...customForm}>
+            <form onSubmit={customForm.handleSubmit(handleCustomPurchase)} className="space-y-4">
+              <FormField
+                control={customForm.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John Doe" {...field} className="bg-white/5 border-white/10 text-white" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={customForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email Address</FormLabel>
+                    <FormControl>
+                      <Input placeholder="john@example.com" type="email" {...field} className="bg-white/5 border-white/10 text-white" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={customForm.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Amount (₹ INR)</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50 font-medium">₹</span>
+                        <Input
+                          type="number"
+                          placeholder="e.g. 2999"
+                          min={1}
+                          {...field}
+                          className="pl-7 bg-white/5 border-white/10 text-white"
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full bg-white text-black hover:bg-white/90" disabled={isProcessing}>
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    {customForm.watch("amount") ? `Pay ₹${Number(customForm.watch("amount")).toLocaleString("en-IN")}` : "Pay Now"}
+                  </>
                 )}
               </Button>
             </form>

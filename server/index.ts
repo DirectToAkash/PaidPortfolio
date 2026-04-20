@@ -99,7 +99,7 @@ app.use((req, res, next) => {
   }
 
   // 🔥 REQUIRED FOR RENDER
-  const port = parseInt(process.env.PORT || "5000", 10);
+  const port = parseInt(process.env.PORT || "3000", 10);
 
   httpServer.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);

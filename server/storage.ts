@@ -70,20 +70,6 @@ export class MemStorage implements IStorage {
     const templateData: Omit<PortfolioTemplate, "id">[] = [
 
       {
-        name: "Open Book Portfolio",
-        description: "A personal portfolio template designed to showcase your work and personality. Features a clean layout and easy customization.",
-        price: 10,
-        priceInr: 950,
-        category: "Personal",
-        previewImage: "/portfolio-creative.png",
-        features: ["Personal Branding", "About Section", "Project Gallery", "Contact Link"],
-        techStack: ["React", "TailwindCSS"],
-        demoUrl: "https://directtoakash.github.io/NewPortfolio/",
-        isFeatured: true,
-        rating: 5,
-        reviewCount: 42,
-      },
-      {
         name: "Advocate Portfolio",
         description: "A professional and authoritative portfolio for legal practitioners and advocates. Establishes trust and expertise.",
         price: 10,
@@ -138,6 +124,20 @@ export class MemStorage implements IStorage {
         isFeatured: true,
         rating: 5,
         reviewCount: 12,
+      },
+      {
+        name: "Custom Portfolio",
+        description: "Get a fully custom portfolio website built just for you. Name your own price and let us create something unique from scratch — tailored to your brand and goals.",
+        price: 0,
+        priceInr: 0,
+        category: "Custom",
+        previewImage: "/portfolio-nizarali.png",
+        features: ["Fully Custom Design", "Personal Branding", "Any Tech Stack", "Dedicated Support"],
+        techStack: ["React", "Framer Motion", "TailwindCSS"],
+        demoUrl: null,
+        isFeatured: true,
+        rating: 5,
+        reviewCount: 8,
       },
     ];
 
