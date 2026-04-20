@@ -3,12 +3,28 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export function CustomCursor() {
     const [isHovered, setIsHovered] = useState(false);
+    const [razorpayOpen, setRazorpayOpen] = useState(false);
     const cursorX = useMotionValue(-100);
     const cursorY = useMotionValue(-100);
 
     const springConfig = { damping: 25, stiffness: 700 };
     const cursorXSpring = useSpring(cursorX, springConfig);
     const cursorYSpring = useSpring(cursorY, springConfig);
+
+    // Hide cursor when Razorpay checkout overlay is open
+    useEffect(() => {
+        const isRazorpayPresent = () =>
+            !!document.querySelector(
+                "#razorpay-container, .razorpay-container, iframe[src*=\"razorpay\"], div[id^=\"razorpay\"]"
+            );
+
+        const observer = new MutationObserver(() => {
+            setRazorpayOpen(isRazorpayPresent());
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true });
+        return () => observer.disconnect();
+    }, []);
 
     useEffect(() => {
         const moveCursor = (e: MouseEvent) => {
@@ -39,6 +55,9 @@ export function CustomCursor() {
             window.removeEventListener("mouseover", handleMouseOver);
         };
     }, [cursorX, cursorY]);
+
+    // Don't render cursor at all when Razorpay is open
+    if (razorpayOpen) return null;
 
     return (
         <>
