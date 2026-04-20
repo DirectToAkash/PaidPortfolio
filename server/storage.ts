@@ -129,7 +129,7 @@ export class MemStorage implements IStorage {
         name: "Designer Template",
         description: "A UI/UX Designer portfolio with 3 years of experience helping brands and businesses craft digital products that are intuitive, engaging, and impactful.",
         price: 10,
-        priceInr: 1999,
+        priceInr: 9999,
         category: "Designer",
         previewImage: "/portfolio-nizarali.png",
         features: ["UI/UX Showcase", "Case Studies", "Clean Design", "Contact Form"],
