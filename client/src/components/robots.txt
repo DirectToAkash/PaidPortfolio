@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Block irrelevant paths
+Disallow: /api/
+Disallow: /_next/
+Disallow: /src/
+
+Sitemap: https://paidportfolio.com/sitemap.xml
