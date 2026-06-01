@@ -12,6 +12,15 @@ const blogPosts = [
     tags: ["Premium Portfolio", "Portfolio Design", "India"],
     featured: true,
   },
+  {
+  slug: "portfolio-website-for-doctors-india",
+  title: "Portfolio Website for Doctors in India — Complete Guide 2025",
+  description: "Over 80% of patients search online before choosing a doctor. Get a complete guide to building a professional portfolio website for doctors in India.",
+  date: "April 21, 2025",
+  readTime: "9 min read",
+  tags: ["Doctor Website", "Medical Portfolio", "India"],
+  featured: false,
+}
 ];
 
 export default function Blog() {
