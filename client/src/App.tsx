@@ -18,6 +18,8 @@ import Privacy from "@/pages/privacy";
 import NotFound from "@/pages/not-found";
 import Book from "@/pages/book";
 import Success from "@/pages/success";
+import Blog from "@/pages/blog/index";
+import BlogPremiumPortfolio from "@/pages/blog/best-premium-portfolio-website-india";
 import { useState } from "react";
 
 function Router() {
@@ -32,6 +34,8 @@ function Router() {
       <Route path="/privacy" component={Privacy} />
       <Route path="/book" component={Book} />
       <Route path="/success" component={Success} />
+      <Route path="/blog" component={Blog} />
+      <Route path="/blog/best-premium-portfolio-website-india" component={BlogPremiumPortfolio} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -39,7 +43,6 @@ function Router() {
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
