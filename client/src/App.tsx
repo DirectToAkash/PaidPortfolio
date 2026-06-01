@@ -21,6 +21,7 @@ import Success from "@/pages/success";
 import Blog from "@/pages/blog/index";
 import BlogPremiumPortfolio from "@/pages/blog/best-premium-portfolio-website-india";
 import { useState } from "react";
+import BlogDoctorPortfolio from "@/pages/blog/portfolio-website-for-doctors-india";
 
 function Router() {
   return (
@@ -37,6 +38,7 @@ function Router() {
       <Route path="/blog" component={Blog} />
       <Route path="/blog/best-premium-portfolio-website-india" component={BlogPremiumPortfolio} />
       <Route component={NotFound} />
+      <Route path="/blog/portfolio-website-for-doctors-india" component={BlogDoctorPortfolio} />
     </Switch>
   );
 }
