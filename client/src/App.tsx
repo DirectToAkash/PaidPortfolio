@@ -43,6 +43,7 @@ function Router() {
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
