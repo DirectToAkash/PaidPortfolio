@@ -20,8 +20,8 @@ import Book from "@/pages/book";
 import Success from "@/pages/success";
 import Blog from "@/pages/blog/index";
 import BlogPremiumPortfolio from "@/pages/blog/best-premium-portfolio-website-india";
-import { useState } from "react";
 import BlogDoctorPortfolio from "@/pages/blog/portfolio-website-for-doctors-india";
+import { useState } from "react";
 
 function Router() {
   return (
@@ -37,15 +37,14 @@ function Router() {
       <Route path="/success" component={Success} />
       <Route path="/blog" component={Blog} />
       <Route path="/blog/best-premium-portfolio-website-india" component={BlogPremiumPortfolio} />
-      <Route component={NotFound} />
       <Route path="/blog/portfolio-website-for-doctors-india" component={BlogDoctorPortfolio} />
+      <Route component={NotFound} />
     </Switch>
   );
 }
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
