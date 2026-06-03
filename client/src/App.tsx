@@ -21,6 +21,11 @@ import Success from "@/pages/success";
 import Blog from "@/pages/blog/index";
 import BlogPremiumPortfolio from "@/pages/blog/best-premium-portfolio-website-india";
 import BlogDoctorPortfolio from "@/pages/blog/portfolio-website-for-doctors-india";
+import BlogLawyerPortfolio from "@/pages/blog/portfolio-website-for-lawyers-india";
+import BlogTeacherPortfolio from "@/pages/blog/portfolio-website-for-teachers-india";
+import BlogArchitectPortfolio from "@/pages/blog/portfolio-website-for-architects-india";
+import BlogCAPortfolio from "@/pages/blog/portfolio-website-for-ca-india";
+import BlogDigitalMarketerPortfolio from "@/pages/blog/portfolio-website-for-digital-marketers-india";
 import { useState } from "react";
 
 function Router() {
@@ -38,6 +43,11 @@ function Router() {
       <Route path="/blog" component={Blog} />
       <Route path="/blog/best-premium-portfolio-website-india" component={BlogPremiumPortfolio} />
       <Route path="/blog/portfolio-website-for-doctors-india" component={BlogDoctorPortfolio} />
+      <Route path="/blog/portfolio-website-for-lawyers-india" component={BlogLawyerPortfolio} />
+      <Route path="/blog/portfolio-website-for-teachers-india" component={BlogTeacherPortfolio} />
+      <Route path="/blog/portfolio-website-for-architects-india" component={BlogArchitectPortfolio} />
+      <Route path="/blog/portfolio-website-for-ca-india" component={BlogCAPortfolio} />
+      <Route path="/blog/portfolio-website-for-digital-marketers-india" component={BlogDigitalMarketerPortfolio} />
       <Route component={NotFound} />
     </Switch>
   );
